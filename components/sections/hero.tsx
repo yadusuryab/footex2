@@ -6,9 +6,9 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/components/ui/carousel";
-import Poster from "@/public/bogo-poster.jpg";
-import Poster2 from "@/public/bogo-2.png";
-import Poster3 from "@/public/bogo-499.png";
+import Poster2 from "@/public/bogo-2.avif";
+import Poster3 from "@/public/bogo-499.avif";
+import Poster4 from "@/public/bogo-499-2.avif";
 
 import Link from "next/link";
 import { ArrowRight, ArrowRightCircle, ArrowUpRightFromCircle } from "lucide-react";
@@ -37,7 +37,12 @@ export function Hero({ filter }: HeroProps) {
             href: "/offer?price=499",
             buttonText: "Claim ₹499 Offer",
           },
-
+          {
+            title: "BOGO at ₹499!",
+            src: Poster4.src, // <-- change to your actual 499 image
+            href: "/offer?price=499",
+            buttonText: "Claim ₹499 Offer",
+          },
         ]
       : [
           {
@@ -46,12 +51,7 @@ export function Hero({ filter }: HeroProps) {
             href: "/offer?price=1199",
             buttonText: "Claim ₹999 Offer",
           },
-          {
-            title: "₹999 Special Offer",
-            src: Poster.src,
-            href: "/offer?price=1199",
-            buttonText: "Claim ₹999 Offer",
-          },
+         
         ];
 
   React.useEffect(() => {

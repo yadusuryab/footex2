@@ -13,25 +13,26 @@ export default function Home() {
     <div className="flex  py-0  flex-col ">
     
     <div className="bg-black overflow-hidden whitespace-nowrap transform -rotate-3 origin-left">
-  <div className="inline-block min-w-full animate-marquee text-white text-2xl px-4">
-  BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 •
-  BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 •
+
+    <div className="inline-block min-w-full animate-marquee text-white text-2xl px-4">
+  BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 •
+  BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 •
   </div>
 </div>
 
 <div className="px-4">
-<Hero filter="999"/>
+<Hero filter="499"/>
 </div>
 <div>
        
 <div className="bg-black overflow-hidden whitespace-nowrap transform rotate-3 origin-left">
-  <div className="inline-block min-w-full animate-marquee text-white text-2xl px-4">
-  BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 •
-  BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 •
+<div className="inline-block min-w-full animate-marquee text-white text-2xl px-4">
+  BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 •
+  BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 •
   </div>
 </div>
 <div className="px-4">
-<Hero filter="499"/>
+<Hero filter="999"/>
 </div>
      </div>
       <div className="container  mx-auto px-4 pt-2">

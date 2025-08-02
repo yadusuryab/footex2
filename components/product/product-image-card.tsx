@@ -1,5 +1,6 @@
 "use client";
 import * as React from "react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { isProductInCart } from "@/lib/cart";
@@ -24,9 +25,8 @@ export interface Product {
 export interface ProductCardProps {
   product: Product;
   className?: string;
-  noLink?: boolean;
-  ybg?: any;
-  onClick?: () => void;
+  noLink?: boolean; // New option to disable linking
+  onClick?: () => void; // Optional click handler for `noLink`
 }
 
 export default function ProductCard2({
@@ -35,10 +35,11 @@ export default function ProductCard2({
   noLink = true,
   ybg = true,
   onClick,
-}: ProductCardProps) {
-  const { _id, productName, offerPrice, images, price } = product;
+}: any) {
+  const { _id, productName, shoeBrand,offerPrice, category, images,price } = product;
   const [isInCart, setIsInCart] = React.useState(false);
 
+  // Check if the product is already in the cart on mount
   React.useEffect(() => {
     setIsInCart(isProductInCart(_id));
 
@@ -50,18 +51,21 @@ export default function ProductCard2({
     return () => window.removeEventListener("cartUpdated", handleCartUpdate);
   }, [_id]);
 
-  const imageUrl = images?.[0]?.asset?.url ?? "/placeholder-image.jpg";
-
   const cardContent = (
-    <div onClick={noLink ? onClick : undefined}>
+    <div
+      onClick={noLink ? onClick : undefined}
+      // Prevent navigation when `noLink` is true
+    >
+      {/* Product Image */}
+
       <ImageCard
-        caption={productName}
+        caption={`${productName}`}
         price={price}
         offerprice={offerPrice}
-        imageUrl={imageUrl}
+        imageUrl={images[0]?.asset.url || "/placeholder-image.jpg"}
         className={className}
         ybg={ybg}
-      />
+      ></ImageCard>
     </div>
   );
 
