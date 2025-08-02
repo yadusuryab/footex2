@@ -1,17 +1,12 @@
-'use client'
-import ProductList from '@/components/product/product-list';
-import { useSearchParams } from 'next/navigation';
-import React from 'react';
+import React, { Suspense } from 'react';
+import OfferClient from './offer-client';
 
-function Page() {
-  const searchParams = useSearchParams();
-  const price = searchParams.get('price'); // read ?price=...
-
+export default function OfferPage() {
   return (
     <div className="container mx-auto px-4">
-      <ProductList price={price} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <OfferClient />
+      </Suspense>
     </div>
   );
 }
-
-export default Page;
