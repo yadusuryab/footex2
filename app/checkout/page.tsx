@@ -61,10 +61,10 @@ export default function CheckoutPage() {
       .map(
         (item, idx) => `
   ${idx + 1}. ${item.productName} - Size: ${item.selectedSize}
-  Link: https://footex.in/p/${item._id}
+  Link: https://footex2.vercel.app/p/${item._id}
   ${item.buyOneGetOne && item.freeProduct
           ? `+ FREE: ${item.freeProduct.productName} - Size: ${item.freeProductSize}
-  Link: https://footex.in/p/${item.freeProduct._id}`
+  Link: https://footex2.vercel.app/p/${item.freeProduct._id}`
           : ""
         }
       `.trim()
