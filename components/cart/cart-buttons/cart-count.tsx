@@ -61,7 +61,7 @@ export default function CartButton({ showLabel = false }: CartButtonProps) {
       size="icon"
       asChild
     >
-      <Link href="/cart">
+      <Link href="/my-cart">
         <ShoppingBag className="h-4 w-4" />
         {totalItems > 0 && (
           <Badge 

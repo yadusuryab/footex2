@@ -102,12 +102,12 @@ function Footer() {
               >
                 About Us
               </Link>
-              <Link 
+              {/* <Link 
                 href="/contact" 
                 className="block text-sm text-muted-foreground transition-colors hover:text-foreground hover:translate-x-1 duration-200"
               >
                 Contact
-              </Link>
+              </Link> */}
             </nav>
           </div>
 
@@ -116,18 +116,18 @@ function Footer() {
             <h3 className="text-lg font-semibold">Customer Service</h3>
             <nav className="space-y-2">
               <Link 
-                href="/shipping" 
+                 href="/T&C" 
                 className="block text-sm text-muted-foreground transition-colors hover:text-foreground hover:translate-x-1 duration-200"
               >
                 Shipping Info
               </Link>
               <Link 
-                href="/returns" 
+                href="/T&C" 
                 className="block text-sm text-muted-foreground transition-colors hover:text-foreground hover:translate-x-1 duration-200"
               >
                 Returns & Exchanges
               </Link>
-              <Link 
+              {/* <Link 
                 href="/size-guide" 
                 className="block text-sm text-muted-foreground transition-colors hover:text-foreground hover:translate-x-1 duration-200"
               >
@@ -138,7 +138,7 @@ function Footer() {
                 className="block text-sm text-muted-foreground transition-colors hover:text-foreground hover:translate-x-1 duration-200"
               >
                 FAQ
-              </Link>
+              </Link> */}
             </nav>
           </div>
 
