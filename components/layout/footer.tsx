@@ -173,7 +173,7 @@ function Footer() {
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <span>Made with</span>
               <Heart className="h-4 w-4 text-red-500 fill-current" />
-              <span>for shoe lovers</span>
+              <span>by <Link href={'https://instagram.com/getshopigo'}>Shopigo</Link></span>
             </div>
             
             <p className="text-sm text-muted-foreground">
