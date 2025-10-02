@@ -158,7 +158,7 @@ export default function CheckoutPage() {
       
       // Optional: Clear cart after successful order
       localStorage.removeItem("cart");
-      router.push("/order-confirmation");
+      // router.push("/order-confirmation");
     }, 500);
   };
 
