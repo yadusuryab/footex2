@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import { Badge } from "../ui/badge";
+import { Clock, AlertTriangle } from "lucide-react";
 
-// Function to get the next midnight UTC time
 function getNextMidnightUTC() {
   const now = new Date();
   const nextMidnight = new Date(
@@ -18,7 +18,6 @@ function getNextMidnightUTC() {
   return nextMidnight;
 }
 
-// Function to calculate the time left
 function getTimeLeft(endTime: Date) {
   const now = new Date();
   const difference = endTime.getTime() - now.getTime();
@@ -42,6 +41,7 @@ function ProductCardWithSale() {
     isExpired: false,
   });
   const [saleEndTime, setSaleEndTime] = useState<Date | null>(null);
+  const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
     const endTime = getNextMidnightUTC();
@@ -49,42 +49,60 @@ function ProductCardWithSale() {
     setTimeLeft(getTimeLeft(endTime));
 
     const timer = setInterval(() => {
-      setTimeLeft(getTimeLeft(endTime));
+      const newTimeLeft = getTimeLeft(endTime);
+      setTimeLeft(newTimeLeft);
+      
+      if (newTimeLeft.isExpired) {
+        setIsVisible(false);
+      }
     }, 1000);
 
     return () => clearInterval(timer);
   }, []);
 
-  if (timeLeft.isExpired) return null;
+  if (!isVisible || timeLeft.isExpired) return null;
+
+  const isUrgent = timeLeft.hours < 6;
 
   return (
-    <div>
-      <div className="flex w-full gap-2 my-2 md:items-center md:mt-24 md:max-w-[500px] mx-auto">
-        <div className="flex grow gap-3 md:items-center">
-          <div
-           
-            className="flex grow flex-col bg-primary from-bw to-main p-4 rounded-xl justify-between my-2 shadow gap-3 "
-          >
-            <div className="text-center">
-              <p className="text-2xl font-bold">24Hr Deal</p>
-            </div>
-            <div className="flex gap-3 max-md:flex-wrap w-full">
-              <div className="flex items-center  w-full divide-border rounded-xl bg-secondary border text-primary text-2xl font-bold tabular-nums">
-                <span className="flex h-10 w-full items-center justify-center p-2">
-                  {timeLeft.hours.toString().padStart(2, "0")}
-                  <span className="">h</span>
-                </span>
-                <span className="flex h-10 w-full items-center justify-center p-2">
-                  {timeLeft.minutes.toString().padStart(2, "0")}
-                  <span className="">m</span>
-                </span>
-                <span className="flex h-10 w-full  items-center justify-center p-2">
-                  {timeLeft.seconds.toString().padStart(2, "0")}
-                  <span className="">s</span>
-                </span>
+    <div className="w-full max-w-2xl mx-auto">
+      <div className={`rounded-2xl p-6 shadow-lg border-2 ${
+        isUrgent 
+          ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white animate-pulse' 
+          : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
+      }`}>
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Clock className="h-5 w-5" />
+            <span className="text-lg font-bold">Deal Ends In</span>
+          </div>
+          {isUrgent && (
+            <Badge variant="secondary" className="bg-white text-red-600 font-bold">
+              <AlertTriangle className="h-3 w-3 mr-1" />
+              HURRY!
+            </Badge>
+          )}
+        </div>
+        
+        <div className="grid grid-cols-3 gap-3">
+          {[
+            { value: timeLeft.hours, label: 'Hours' },
+            { value: timeLeft.minutes, label: 'Minutes' },
+            { value: timeLeft.seconds, label: 'Seconds' }
+          ].map((item, index) => (
+            <div key={index} className="text-center">
+              <div className="bg-white/20 backdrop-blur-sm rounded-xl p-3">
+                <div className="text-2xl md:text-3xl font-bold tabular-nums">
+                  {item.value.toString().padStart(2, '0')}
+                </div>
+                <div className="text-sm opacity-90 mt-1">{item.label}</div>
               </div>
             </div>
-          </div>
+          ))}
+        </div>
+        
+        <div className="mt-4 text-center text-sm opacity-90">
+          ⚡ Offer expires at midnight. Don't miss out!
         </div>
       </div>
     </div>
