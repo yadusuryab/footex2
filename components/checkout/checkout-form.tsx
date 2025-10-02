@@ -7,10 +7,12 @@ interface CustomerDetailsFormProps {
     name: string;
     email: string;
     contact1: string;
+    contact2: string;
     address: string;
     district: string;
     state: string;
     pincode: string;
+    landmark: string;
   };
   handleInputChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -47,16 +49,28 @@ export const CustomerDetailsForm = ({
         />
       </div>
     </div>
-    <div className="space-y-2">
-      <Label htmlFor="contact1">Contact Number</Label>
-      <Input
-        id="contact1"
-        name="contact1"
-        placeholder="Phone number"
-        value={customerDetails.contact1}
-        onChange={handleInputChange}
-        required
-      />
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div className="space-y-2">
+        <Label htmlFor="contact1">Contact Number 1</Label>
+        <Input
+          id="contact1"
+          name="contact1"
+          placeholder="Primary phone number"
+          value={customerDetails.contact1}
+          onChange={handleInputChange}
+          required
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="contact2">Contact Number 2 (Optional)</Label>
+        <Input
+          id="contact2"
+          name="contact2"
+          placeholder="Secondary phone number"
+          value={customerDetails.contact2}
+          onChange={handleInputChange}
+        />
+      </div>
     </div>
     <div className="space-y-2">
       <Label htmlFor="address">Address</Label>
@@ -67,6 +81,16 @@ export const CustomerDetailsForm = ({
         value={customerDetails.address}
         onChange={handleInputChange}
         required
+      />
+    </div>
+    <div className="space-y-2">
+      <Label htmlFor="landmark">Landmark (Optional)</Label>
+      <Input
+        id="landmark"
+        name="landmark"
+        placeholder="Nearby landmark"
+        value={customerDetails.landmark}
+        onChange={handleInputChange}
       />
     </div>
     <div className="space-y-2">

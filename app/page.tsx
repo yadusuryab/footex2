@@ -12,7 +12,7 @@ export default function Home() {
   return (
     <div className="flex  py-0  flex-col ">
     
-    <div className="bg-black overflow-hidden whitespace-nowrap transform -rotate-3 origin-left">
+    {/* <div className="bg-black overflow-hidden whitespace-nowrap transform -rotate-3 origin-left">
 
     <div className="inline-block min-w-full animate-marquee text-white text-2xl px-4">
   BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 • BUY ONE GET ONE AT ₹499 •
@@ -22,7 +22,7 @@ export default function Home() {
 
 <div className="px-4">
 <Hero filter="499"/>
-</div>
+</div> */}
 <div>
        
 <div className="bg-black overflow-hidden whitespace-nowrap transform rotate-3 origin-left">

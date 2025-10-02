@@ -50,9 +50,9 @@ export default function CartPage() {
         {cartItems.length === 0 ? (
           <p className="text-muted-foreground  text-sm font-semibold">Your cart is empty.</p>
         ) : (
-          cartItems.map((item: any) => (
+          cartItems.map((item: any,index) => (
             <CartItem
-            key={item._id}
+            key={index}
             item={item}
             onRemove={()=>removeFromCart(item._id)}
           />

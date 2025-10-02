@@ -1,12 +1,11 @@
 import { client } from "@/sanityClient";
-
 export const getAllShoes = async (price?: string | null): Promise<any[] | undefined> => {
   let priceFilter = "";
   if (price === "999" || price === "499") {
     priceFilter = `&& price == ${price}`;
   }
 
-  const query = `*[_type == "shoe" ${priceFilter}] {
+  const query = `*[_type == "shoe" ${priceFilter}] | order(_createdAt asc) {
     _id,
     productName,
     shoeBrand,
@@ -24,7 +23,8 @@ export const getAllShoes = async (price?: string | null): Promise<any[] | undefi
     isOffer,
     offerPrice,
     buyOneGetOne,
-    stock
+    stock,
+    _createdAt
   }`;
 
   try {
@@ -35,6 +35,7 @@ export const getAllShoes = async (price?: string | null): Promise<any[] | undefi
     return undefined;
   }
 };
+
 
 export const getShoeById = async (id: string): Promise<any | undefined> => {
   const query = `*[_type == "shoe" && _id == $id] {
