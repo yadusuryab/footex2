@@ -16,7 +16,7 @@ export interface CartItem {
   
   export const calculateTotalAmount = (subtotal: number, shippingCharge: number) => {
     const cashfreeCommission = (subtotal + shippingCharge) * 0.02;
-    return subtotal + shippingCharge + cashfreeCommission;
+    return subtotal + shippingCharge ;
   };
   
   export const validateForm = (customerDetails: {

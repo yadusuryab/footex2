@@ -191,7 +191,7 @@ export const OrderSummary = ({
             <span>₹{shippingCharge}</span>
           </div>
           
-          {platformFee > 0 && (
+          {/* {platformFee > 0 && (
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-muted-foreground">
                 <Shield className="h-4 w-4" />
@@ -199,7 +199,7 @@ export const OrderSummary = ({
               </div>
               <span>₹{platformFee.toFixed(2)}</span>
             </div>
-          )}
+          )} */}
         </div>
       </div>
 
