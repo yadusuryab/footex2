@@ -29,7 +29,7 @@ function Footer() {
                 {site.name}
               </h3>
               <p className="text-sm text-muted-foreground max-w-xs">
-                Your premier destination for premium footwear. Step into style with our curated collection of trendy and comfortable shoes.
+                Your destination for footwear. Step into style with our curated collection of trendy and comfortable shoes.
               </p>
             </div>
             
@@ -42,11 +42,10 @@ function Footer() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-10 w-10 rounded-full transition-all hover:scale-110 hover:bg-primary hover:text-primary-foreground"
                       asChild
                     >
                     
-                        <IconBrandInstagram className="h-4 w-4" />
+                        <IconBrandInstagram  className="h-8 w-8" />
                       
                     </Button>
                     </Link>
@@ -65,11 +64,10 @@ function Footer() {
                     <Button
                       variant="outline"
                       size="icon"
-                      className="h-10 w-10 rounded-full transition-all hover:scale-110 hover:bg-green-600 hover:text-white"
                       asChild
                     >
                       
-                        <IconBrandWhatsapp className="h-4 w-4" />
+                        <IconBrandWhatsapp className="h-8 w-8" />
                      
                     </Button>
                     </Link>
@@ -165,11 +163,7 @@ function Footer() {
             </div>
             
             {/* Business Hours */}
-            <div className="pt-2">
-              <p className="text-xs text-muted-foreground">
-                📅 Mon-Sun: 9:00 AM - 9:00 PM
-              </p>
-            </div>
+            
           </div>
         </div>
 

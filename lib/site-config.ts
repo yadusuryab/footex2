@@ -1,12 +1,12 @@
 export const site : any = {
     name : 'footex',
-    instagram:'footex',
+    instagram:'footex_',
     phone:"8606458076",
     google_map:"",
     email:"fashionshoes110@gmail.com",
-    address:"footex",
+    address:"kerala",
     social : {
-        instagram:'',
-        whatsapp:''
+        instagram:'footex_',
+        whatsapp:'8606458076'
     }
 }

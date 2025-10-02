@@ -232,7 +232,6 @@ export default function CartPage() {
                 
                 <div className="text-xs text-muted-foreground text-center space-y-1">
                   <p>🔒 Secure checkout</p>
-                  <p>🚚 Free returns within 30 days</p>
                 </div>
               </CardFooter>
             </Card>
