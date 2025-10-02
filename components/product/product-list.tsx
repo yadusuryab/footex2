@@ -23,6 +23,54 @@ interface ProductListProps {
   price?: string | null;
 }
 
+// Skeleton Loading Components
+const ProductCardSkeleton = ({ variant = "grid" }: { variant?: "grid" | "list" }) => {
+  if (variant === "list") {
+    return (
+      <div className="flex gap-4 p-4 border rounded-lg animate-pulse">
+        <div className="w-24 h-24 bg-muted rounded-lg"></div>
+        <div className="flex-1 space-y-3">
+          <div className="h-4 bg-muted rounded w-3/4"></div>
+          <div className="h-3 bg-muted rounded w-1/2"></div>
+          <div className="h-3 bg-muted rounded w-1/4"></div>
+          <div className="flex gap-2 mt-2">
+            <div className="h-8 bg-muted rounded flex-1"></div>
+            <div className="h-8 bg-muted rounded w-8"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-3 animate-pulse">
+      <div className="aspect-square bg-muted rounded-lg"></div>
+      <div className="space-y-2">
+        <div className="h-4 bg-muted rounded"></div>
+        <div className="h-3 bg-muted rounded w-3/4"></div>
+        <div className="h-3 bg-muted rounded w-1/2"></div>
+        <div className="flex justify-between items-center mt-2">
+          <div className="h-4 bg-muted rounded w-1/3"></div>
+          <div className="h-8 bg-muted rounded w-8"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ControlsSkeleton = () => (
+  <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center p-4 bg-card rounded-lg border animate-pulse">
+    <div className="w-full sm:max-w-xs h-10 bg-muted rounded"></div>
+    <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+      <div className="w-[140px] h-10 bg-muted rounded"></div>
+      <div className="flex border rounded-lg p-1">
+        <div className="h-8 w-8 bg-muted rounded"></div>
+        <div className="h-8 w-8 bg-muted rounded ml-1"></div>
+      </div>
+    </div>
+  </div>
+);
+
 function ProductList({ price }: ProductListProps) {
   const [vehicles, setVehicles] = useState<any[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -105,23 +153,31 @@ function ProductList({ price }: ProductListProps) {
     [filteredAndSortedVehicles, visibleItems]
   );
 
+  // Load more products function
+  const loadMoreProducts = useCallback(() => {
+    if (!isLoadingMore && displayedVehicles.length < filteredAndSortedVehicles.length) {
+      setIsLoadingMore(true);
+      // Simulate loading time
+      setTimeout(() => {
+        setVisibleItems((prev) => prev + 6); // Load 6 products per scroll
+        setIsLoadingMore(false);
+      }, 500);
+    }
+  }, [isLoadingMore, displayedVehicles.length, filteredAndSortedVehicles.length]);
+
   // Infinite scroll with loading state
   const handleScroll = useCallback(
     throttle(() => {
-      if (
-        window.innerHeight + window.scrollY >=
-        document.documentElement.offsetHeight - 500 &&
-        !isLoadingMore &&
-        displayedVehicles.length < filteredAndSortedVehicles.length
-      ) {
-        setIsLoadingMore(true);
-        setTimeout(() => {
-          setVisibleItems((prev) => prev + 8);
-          setIsLoadingMore(false);
-        }, 800);
+      const scrollTop = window.scrollY || document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const clientHeight = window.innerHeight;
+
+      // Load more when user scrolls to 80% of the page
+      if (scrollTop + clientHeight >= scrollHeight * 0.8) {
+        loadMoreProducts();
       }
-    }, 500),
-    [isLoadingMore, displayedVehicles.length, filteredAndSortedVehicles.length]
+    }, 300),
+    [loadMoreProducts]
   );
 
   useEffect(() => {
@@ -129,15 +185,64 @@ function ProductList({ price }: ProductListProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
+  // Auto-load more products when component mounts if the page is not filled
+  useEffect(() => {
+    if (!loading && vehicles && vehicles.length > 0) {
+      const checkIfNeedMoreProducts = () => {
+        const scrollHeight = document.documentElement.scrollHeight;
+        const clientHeight = window.innerHeight;
+        
+        // If content height is less than viewport height, load more
+        if (scrollHeight <= clientHeight * 1.5 && displayedVehicles.length < filteredAndSortedVehicles.length) {
+          loadMoreProducts();
+        }
+      };
+
+      // Check after a small delay to allow DOM to update
+      setTimeout(checkIfNeedMoreProducts, 100);
+    }
+  }, [loading, vehicles, displayedVehicles.length, filteredAndSortedVehicles.length, loadMoreProducts]);
+
   // Reset visible items when filters change
   useEffect(() => {
     setVisibleItems(12);
   }, [searchQuery, sortBy]);
 
+  // Render skeleton loading for initial load
   if (loading) {
     return (
-      <div className="min-h-[400px] flex items-center justify-center">
-        <Splash />
+      <div className="space-y-6">
+        {/* Header Section Skeleton */}
+        <div className="md:mx-24">
+          <div className="space-y-3 animate-pulse">
+            <div className="h-8 bg-muted rounded w-1/3 mx-auto"></div>
+            <div className="h-4 bg-muted rounded w-1/2 mx-auto"></div>
+            <div className="h-6 bg-muted rounded w-24 mx-auto"></div>
+          </div>
+        </div>
+
+        {/* Controls Skeleton */}
+        <div className="md:mx-24">
+          <ControlsSkeleton />
+        </div>
+
+        {/* Results Info Skeleton */}
+        <div className="md:mx-24">
+          <div className="h-4 bg-muted rounded w-1/4 animate-pulse mb-4"></div>
+        </div>
+
+        {/* Products Grid Skeleton */}
+        <div className="md:mx-24">
+          <div className={
+            viewMode === "grid" 
+              ? "grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4"
+              : "grid grid-cols-1 gap-4"
+          }>
+            {Array.from({ length: 12 }).map((_, index) => (
+              <ProductCardSkeleton key={index} variant={viewMode} />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -257,9 +362,16 @@ function ProductList({ price }: ProductListProps) {
               onClick={() => handleProductClick(vehicle)}
             />
           ))}
+
+          {/* Show skeleton loading when loading more items */}
+          {isLoadingMore && 
+            Array.from({ length: 6 }).map((_, index) => (
+              <ProductCardSkeleton key={`skeleton-${index}`} variant={viewMode} />
+            ))
+          }
         </div>
 
-        {/* Loading More Indicator */}
+        {/* Loading indicator */}
         {isLoadingMore && (
           <div className="flex justify-center py-8">
             <div className="flex items-center gap-2 text-muted-foreground">
