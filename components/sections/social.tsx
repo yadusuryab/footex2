@@ -18,10 +18,10 @@ export function Social() {
        <IconBrandInstagram className="size-6"/></Link>
         </DockIcon>
         <DockIcon>
-        <Link href={'https://wa.me/918606458076?text=Hi'}>  <IconBrandWhatsapp className="size-6" /></Link>
+        <Link href={'https://wa.me/919656060874?text=Hi'}>  <IconBrandWhatsapp className="size-6" /></Link>
         </DockIcon>
         <DockIcon>
-        <Link href={'tel:918606458076'}>  <IconPhoneCall className="size-6" /></Link>
+        <Link href={'tel:919656060874'}>  <IconPhoneCall className="size-6" /></Link>
         </DockIcon>
        
       </Dock>

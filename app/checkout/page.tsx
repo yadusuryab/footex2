@@ -368,8 +368,8 @@ export default function CheckoutPage() {
                     <span className="text-muted-foreground">Delivery Time</span>
                     <span className="font-medium">
                       {shippingMethod === "online"
-                        ? "5-8 days"
-                        : "10-15 days (working days)"}
+                        ? "5-8 days (business days)"
+                        : "10-15 days (business days)"}
                     </span>
                   </div>
                 </div>

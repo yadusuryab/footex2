@@ -150,10 +150,10 @@ function Footer() {
                 <Phone className="h-4 w-4 text-primary" />
                 <span>{site.phone}</span>
               </div>
-              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+              {/* <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Mail className="h-4 w-4 text-primary" />
                 <span>{site.email}</span>
-              </div>
+              </div> */}
               {site.address && (
                 <div className="flex items-start gap-3 text-sm text-muted-foreground">
                   <MapPin className="h-4 w-4 text-primary mt-0.5" />
