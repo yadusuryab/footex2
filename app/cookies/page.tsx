@@ -4,8 +4,8 @@ export default function CookiesPolicy() {
   return (
     <>
       <Head>
-        <title>Cookies Policy - Footmart</title>
-        <meta name="description" content="Learn how Footmart uses cookies to enhance your browsing experience." />
+        <title>Cookies Policy - footex</title>
+        <meta name="description" content="Learn how footex uses cookies to enhance your browsing experience." />
       </Head>
       <div className="container mx-auto p-6">
         <h1 className="text-3xl font-bold mb-4">Cookies Policy</h1>
@@ -21,15 +21,15 @@ export default function CookiesPolicy() {
         <h3 className="text-xl font-semibold mt-4">Definitions</h3>
         <ul className="list-disc ml-6">
           <li>
-            <strong>Company:</strong> Refers to Footmart ("the Company", "We", "Us", or "Our").
+            <strong>Company:</strong> Refers to footex ("the Company", "We", "Us", or "Our").
           </li>
           <li>
             <strong>Cookies:</strong> Small files placed on Your device, containing browsing history details among other
             uses.
           </li>
           <li>
-            <strong>Website:</strong> Refers to Footmart, accessible from
-            <a href="https://Footmart.in" target="_blank" rel="noopener noreferrer" className="text-blue-500"> Footmart.in</a>.
+            <strong>Website:</strong> Refers to footex, accessible from
+            <a href="https://footex.in" target="_blank" rel="noopener noreferrer" className="text-blue-500"> footex.in</a>.
           </li>
           <li>
             <strong>You:</strong> The individual or legal entity accessing or using the Website.
@@ -71,12 +71,12 @@ export default function CookiesPolicy() {
         <p>
           If you have any questions about this Cookies Policy, contact us at:
           <a
-            href="https://Footmart.in/contact"
+            href="https://footex.in/contact"
             target="_blank"
             rel="noopener noreferrer"
             className="text-blue-500"
           >
-            Footmart.in/contact
+            footex.in/contact
           </a>
           .
         </p>

@@ -26,6 +26,7 @@ import { CustomerDetailsForm } from "@/components/checkout/checkout-form";
 import { OrderSummary } from "@/components/checkout/order-summary";
 import { Button } from "@/components/ui/button";
 import { site } from "@/lib/site-config";
+import Link from "next/link";
 
 interface ShippingMethod {
   id: "online" | "cod";
@@ -372,6 +373,9 @@ export default function CheckoutPage() {
                         : "10-15 days (business days)"}
                     </span>
                   </div>
+                  <div className="text-muted-foreground">
+    By placing this order you agree to our <Link target="_blank" href="/T&C" className="underline">terms and conditions</Link>.
+</div>
                 </div>
               </CardContent>
             </Card>

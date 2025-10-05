@@ -36,7 +36,7 @@ export const PaymentMethod = ({
 
   // Generate UPI payment link with amount
   const generateUpiLink = (amount: number) => {
-    return `upi://pay?pa=${upiId}&pn=Footmart&am=${amount}&cu=INR&tn=Payment for order`;
+    return `upi://pay?pa=${upiId}&pn=footex&am=${amount}&cu=INR&tn=Payment for order`;
   };
 
   // Open UPI app with prefilled amount

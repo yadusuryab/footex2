@@ -117,7 +117,7 @@ const TermsAndConditions = () => {
       </p>
 
       <p className="mt-4 text-center font-semibold">
-        BEST REGARDS, Footmart TEAM
+        BEST REGARDS, footex TEAM
       </p>
     </div>
   );
