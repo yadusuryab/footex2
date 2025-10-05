@@ -15,8 +15,14 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input"; // Import Input component for search bar
 import ProductCard2 from "@/components/product/product-image-card";
 import { DialogClose } from "@radix-ui/react-dialog";
-import { IconAlertSquareRoundedFilled, IconSearch } from "@tabler/icons-react";
+import { 
+  Search, CheckCircle, ShoppingCart, AlertCircle, ChevronRight, 
+  Ruler, Gift, Lock, AlertTriangle, Plus, MousePointerClick, 
+  RotateCcw, ArrowDown 
+} from "lucide-react";
+
 import Image from "next/image";
+import { motion } from "framer-motion";
 
 export interface Product {
   _id: string;
@@ -121,99 +127,180 @@ export const useAddToCart = () => {
   };
 
   // Render BOGO modal
+  // Render BOGO modal
   const renderBogoPage = (bogoProducts: Product[]) => {
     if (!isBogoModalOpen) return null;
   
     return (
       <div className="fixed inset-0 bg-background z-50 p-4 overflow-y-auto">
-        <h2 className="text-xl text-center font-semibold mb-4">SELECT 2ND PAIR</h2>
+        {/* Minimal Header */}
+        <div className="text-center mb-6">
+          <h2 className="text-xl font-semibold mb-2">Select 2nd Pair</h2>
+          <p className="text-muted-foreground text-sm">
+            choose your second pair.
+          </p>
+        </div>
   
         {/* Search Bar */}
         <div className="relative w-full mb-6">
-  <input
-    type="text"
-    placeholder="Search by colors (e.g., Black, Green, Gray...)"
-    value={searchQuery}
-    onChange={(e) => setSearchQuery(e.target.value)}
-    className="w-full rounded-full bg-muted/30 shadow-xl px-5 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary transition-all duration-200"
-  />
-  <div className="absolute right-4 top-1/2 -translate-y-1/2 bg-white text-muted-foreground pointer-events-none">
-    <IconSearch/>
-  </div>
-</div>
-
-        {/* Product Grid */}
-        <div className="grid md:grid-cols-3 grid-cols-2 gap-4 mb-10">
-          {!filteredBogoProducts && <h2>No Products</h2>}
-          {filteredBogoProducts(bogoProducts).map((bogoProduct) => (
-            <div key={bogoProduct._id} className="w-full">
-              <ProductCard2
-                ybg={false}
-                product={bogoProduct}
-                className={`w-full ${
-                  selectedFreeProduct?._id === bogoProduct._id ? "border-2 border-primary" : ""
-                }`}
-                onClick={() => {
-                  setSelectedFreeProduct(bogoProduct);
-                  setSelectedFreeProductSize(null); // reset size
-                }}
-              />
-  
-              {/* Show size selector below the selected free product */}
-              {selectedFreeProduct?._id === bogoProduct._id && (
-                <div className="flex flex-wrap gap-2 mt-2">
-                  {bogoProduct.sizes.map((size: string) => (
-                    <Button
-                      key={size}
-                      variant={selectedFreeProductSize === size ? "default" : "secondary"}
-                      onClick={() => setSelectedFreeProductSize(size)}
-                    >
-                      {size}
-                    </Button>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
+          <input
+            type="text"
+            placeholder="Search by colors..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-full bg-muted/30 px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+          />
+          <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         </div>
   
-        {/* Fixed Bottom Bar */}
-        <div className="fixed bottom-0 left-0 w-full bg-white border-t p-4 shadow-lg">
-          {selectedProduct && (
-            <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-4 ">
-                <Image src={selectedProduct.images[0]?.asset.url}alt="Footex selected product" className="rounded-full" width={100} height={100}/>
-                <div>
-                {!selectedFreeProduct && <p className="italic text-sm mb-2 inline-flex"> <IconAlertSquareRoundedFilled/><span>Select a pair of shoes (it's free) to Continue.</span></p>}
-                <Button
-        size={'lg'}
-          onClick={
-            
-             confirmFreeProductSize
-          
-          }
-          className="w-full "
-          disabled={
-            (!selectedFreeProduct && !selectedFreeProductSize)
-          }
-        >
-
-        Confirm & Go to Cart
-        </Button>
-                </div>
-                {/* <span className="font-medium">{selectedProduct.productName}</span> */}
-              </div>
+        {/* Selected Product Preview - Minimal */}
+        {selectedProduct && (
+          <div className="flex items-center gap-3 mb-4 p-3 bg-muted/30 rounded-lg">
+            <div className="w-10 h-10 bg-white rounded border overflow-hidden">
+              <img 
+                src={selectedProduct.images[0]?.asset.url} 
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <div className="flex-1">
+              <p className="text-sm font-medium">Your first pair</p>
+              <p className="text-xs text-muted-foreground">Size: {selectedSize}</p>
+            </div>
+            <Badge variant="secondary" className="text-xs">
+              ✓ Selected
+            </Badge>
+          </div>
+        )}
   
-             
+        {/* Simple Status */}
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-sm text-muted-foreground">
+            {filteredBogoProducts(bogoProducts).length} pairs available
+          </span>
+          {selectedFreeProduct && !selectedFreeProductSize && (
+            <div className="flex items-center gap-1 text-amber-600 text-sm">
+              <Ruler className="h-4 w-4" />
+              <span>Select size</span>
             </div>
           )}
+        </div>
+  
+        {/* Product Grid */}
+        <div className="grid md:grid-cols-3 grid-cols-2 gap-4 mb-20">
+          {filteredBogoProducts(bogoProducts).length === 0 ? (
+            <div className="col-span-full text-center py-8">
+              <Search className="h-8 w-8 text-muted-foreground mx-auto mb-2 opacity-50" />
+              <p className="text-muted-foreground text-sm">No products found</p>
+            </div>
+          ) : (
+            filteredBogoProducts(bogoProducts).map((bogoProduct) => (
+              <div key={bogoProduct._id} className="w-full">
+                <div className={`relative rounded-lg border transition-colors ${
+                  selectedFreeProduct?._id === bogoProduct._id 
+                    ? "border-primary" 
+                    : "border-border hover:border-primary/50"
+                }`}>
+                  <ProductCard2
+                    ybg={false}
+                    product={bogoProduct}
+                    className="w-full"
+                    onClick={() => {
+                      setSelectedFreeProduct(bogoProduct);
+                      setSelectedFreeProductSize(null);
+                    }}
+                  />
+                  
+                  {selectedFreeProduct?._id === bogoProduct._id && (
+                    <div className="absolute top-2 right-2 bg-primary text-primary-foreground rounded-full p-1">
+                      <CheckCircle className="h-3 w-3" />
+                    </div>
+                  )}
+                </div>
+  
+                {/* Minimal Size Selector */}
+                {selectedFreeProduct?._id === bogoProduct._id && (
+                  <div className="mt-3 p-3 bg-muted/30 rounded-lg">
+                    <p className="text-sm font-medium mb-2 text-center">Select size</p>
+                    <div className="flex flex-wrap gap-2 justify-center">
+                      {bogoProduct.sizes.map((size: string) => (
+                        <Button
+                          key={size}
+                          size="sm"
+                          variant={selectedFreeProductSize === size ? "default" : "outline"}
+                          className={`min-w-[45px] ${
+                            selectedFreeProductSize === size ? "bg-primary" : ""
+                          }`}
+                          onClick={() => setSelectedFreeProductSize(size)}
+                        >
+                          {size}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            ))
+          )}
+        </div>
+  
+        {/* Minimal Fixed Bottom Bar */}
+        <div className="fixed bottom-0 left-0 w-full bg-background border-t p-4">
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-center justify-between gap-4">
+              {/* Selection Status */}
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                {selectedFreeProduct ? (
+                  <>
+                    <div className="w-8 h-8 bg-muted rounded border overflow-hidden flex-shrink-0">
+                      <img 
+                        src={selectedFreeProduct.images[0]?.asset.url} 
+                        alt=""
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm font-medium truncate">
+                        Free pair selected
+                      </p>
+                      <div className="flex items-center gap-2">
+                        {selectedFreeProductSize ? (
+                          <span className="text-xs text-green-600">
+                            Size {selectedFreeProductSize}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-amber-600">
+                            Size needed
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-sm text-muted-foreground">
+                    Select a free pair
+                  </div>
+                )}
+              </div>
+  
+              {/* Action Buttons */}
+              <div className="flex items-center gap-2">
+              
+                <Button
+                  size="lg"
+                  onClick={confirmFreeProductSize}
+                  disabled={!selectedFreeProduct || !selectedFreeProductSize}
+                  className="min-w-[120px]"
+                >
+                  {selectedFreeProductSize ? "Add to Cart" : "Select Size"}
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
   };
-  
-  
-  
 
   // Render size selection modal
   const renderSizeModal = (bogoProducts: Product[]) => (
@@ -228,7 +315,7 @@ export const useAddToCart = () => {
           <>
             {/* Free Product Section */}
             <div className="flex justify-center">
-            <ProductCard2 product={selectedFreeProduct} />
+              <ProductCard2 product={selectedFreeProduct} />
             </div>
             {/* <Label>
               Select Size for {selectedFreeProduct.productName}&nbsp;
@@ -249,11 +336,11 @@ export const useAddToCart = () => {
             </div>
           </>
         ) : (
-          <div >
+          <div>
             {/* Main Product Section */}
-           <div className="w-full flex my-2 justify-center  mx-auto">
-           <ProductCard2 product={selectedProduct} />
-           </div>
+            <div className="w-full flex my-2 justify-center  mx-auto">
+              <ProductCard2 product={selectedProduct} />
+            </div>
             {/* <Label>Select Size for {selectedProduct?.productName}</Label> */}
             <div className="flex justify-center gap-2">
               {selectedProduct?.sizes.map((size: string) => (
@@ -272,22 +359,23 @@ export const useAddToCart = () => {
 
         {/* Confirm Button */}
         <DialogClose>
-        <div>
-        <Button
-        size={'lg'}
-          onClick={
-            selectedFreeProduct
-              ? confirmFreeProductSize
-              : confirmMainProductSize
-          }
-          className="w-full "
-          disabled={
-            !selectedSize || (selectedFreeProduct && !selectedFreeProductSize)
-          }
-        >
-          {selectedFreeProduct ? "Confirm & Go to Cart" : "Confirm Size"}
-        </Button>
-        </div>
+          <div>
+            <Button
+              size={"lg"}
+              onClick={
+                selectedFreeProduct
+                  ? confirmFreeProductSize
+                  : confirmMainProductSize
+              }
+              className="w-full "
+              disabled={
+                !selectedSize ||
+                (selectedFreeProduct && !selectedFreeProductSize)
+              }
+            >
+              {selectedFreeProduct ? "Confirm & Go to Cart" : "Confirm Size"}
+            </Button>
+          </div>
         </DialogClose>
       </DialogContent>
     </Dialog>
