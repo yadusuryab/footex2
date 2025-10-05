@@ -230,9 +230,11 @@ export const OrderSummary = ({
         
         {/* Delivery Info */}
         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-          <Truck className="h-3 w-3" />
-          <span>Estimated delivery: 4-7 business days</span>
-        </div>
+  <Truck className="h-3 w-3" />
+  <span>
+    Estimated delivery: {shippingMethod === 'online' ? '5-8 days' : '10-15 working days'}
+  </span>
+</div>
       </div>
     </div>
   );

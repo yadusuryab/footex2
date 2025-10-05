@@ -2,7 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardDescription,
+} from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
@@ -19,6 +25,7 @@ import {
 import { CustomerDetailsForm } from "@/components/checkout/checkout-form";
 import { OrderSummary } from "@/components/checkout/order-summary";
 import { Button } from "@/components/ui/button";
+import { site } from "@/lib/site-config";
 
 interface ShippingMethod {
   id: "online" | "cod";
@@ -34,21 +41,23 @@ const shippingMethods: ShippingMethod[] = [
     name: "Online Delivery",
     description: "Fast delivery with online payment",
     charge: 100,
-    icon: <CheckCircle2 className="h-5 w-5" />
+    icon: <CheckCircle2 className="h-5 w-5" />,
   },
   {
     id: "cod",
     name: "Cash on Delivery",
     description: "Pay when you receive the order",
     charge: 300,
-    icon: <ShoppingBag className="h-5 w-5" />
-  }
+    icon: <ShoppingBag className="h-5 w-5" />,
+  },
 ];
 
 export default function CheckoutPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [shippingMethod, setShippingMethod] = useState<"online" | "cod">("online");
+  const [shippingMethod, setShippingMethod] = useState<"online" | "cod">(
+    "online"
+  );
   const [shippingCharge, setShippingCharge] = useState(100);
   const [customerDetails, setCustomerDetails] = useState({
     name: "",
@@ -76,7 +85,7 @@ export default function CheckoutPage() {
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-    setCustomerDetails(prev => ({ ...prev, [name]: value }));
+    setCustomerDetails((prev) => ({ ...prev, [name]: value }));
     // Clear errors when user starts typing
     if (formErrors.length > 0) {
       setFormErrors([]);
@@ -85,18 +94,22 @@ export default function CheckoutPage() {
 
   const validateFormBeforeSubmit = () => {
     const errors: string[] = [];
-    
+
     if (!customerDetails.name.trim()) errors.push("Name is required");
-    if (!customerDetails.contact1.trim()) errors.push("Contact number is required");
+    if (!customerDetails.contact1.trim())
+      errors.push("Contact number is required");
     if (!customerDetails.address.trim()) errors.push("Address is required");
     if (!customerDetails.district.trim()) errors.push("District is required");
     if (!customerDetails.state.trim()) errors.push("State is required");
     if (!customerDetails.pincode.trim()) errors.push("Pincode is required");
-    
-    if (customerDetails.contact1 && !/^\d{10}$/.test(customerDetails.contact1)) {
+
+    if (
+      customerDetails.contact1 &&
+      !/^\d{10}$/.test(customerDetails.contact1)
+    ) {
       errors.push("Contact number must be 10 digits");
     }
-    
+
     if (customerDetails.pincode && !/^\d{6}$/.test(customerDetails.pincode)) {
       errors.push("Pincode must be 6 digits");
     }
@@ -107,29 +120,37 @@ export default function CheckoutPage() {
 
   const handleWhatsAppOrder = () => {
     if (!validateFormBeforeSubmit()) return;
-  
+
     setIsLoading(true);
-    
-    const phone = '919495314108';
-    
+
+    const phone = site.phone;
+
     // Format product messages according to your specified format with proper links
     const productMessages = cartItems
       .map((item, idx) => {
         const productLink = `https://footex2.vercel.app/p/${item._id}`;
-        let message = `PAIR ${idx + 1}: ${item.productName.toUpperCase()} | Size: ${item.selectedSize} | Extra: ₹0\n`;
-       
+        let message = `PAIR ${
+          idx + 1
+        }: ${item.productName.toUpperCase()} | Size: ${
+          item.selectedSize
+        } | Extra: ₹0\n`;
+
         message += `Link: ${productLink}`;
-        
+
         if (item.buyOneGetOne && item.freeProduct) {
           const freeProductLink = `https://footex2.vercel.app/p/${item.freeProduct._id}`;
-          message += `\nPAIR ${idx + 2}: ${item.freeProduct.productName.toUpperCase()} | Size: ${item.freeProduct.selectedSize} | Extra: ₹0\n`;
+          message += `\nPAIR ${
+            idx + 2
+          }: ${item.freeProduct.productName.toUpperCase()} | Size: ${
+            item.freeProduct.selectedSize
+          } | Extra: ₹0\n`;
           message += `Link: ${freeProductLink}`;
         }
-        
+
         return message;
       })
       .join("\n\n");
-  
+
     const customerMsg = `
   *${cartItems.length} PAIR SHOES ORDER*
   ${productMessages}
@@ -140,34 +161,34 @@ export default function CheckoutPage() {
   District: ${customerDetails.district}
   State: ${customerDetails.state}
   Pincode: ${customerDetails.pincode}
-  Landmark: ${customerDetails.landmark || 'N/A'}
+  Landmark: ${customerDetails.landmark || "N/A"}
   Contact No.1: ${customerDetails.contact1}
-  Contact No.2: ${customerDetails.contact2 || 'N/A'}
+  Contact No.2: ${customerDetails.contact2 || "N/A"}
   
-  SHIPPING METHOD: ${shippingMethod === 'online' ? 'Online' : 'COD'}
+  SHIPPING METHOD: ${shippingMethod === "online" ? "Online" : "COD"}
   Payment: ₹${shippingCharge}
   GRAND TOTAL: *₹${totalAmount}*
     `.trim();
-  
+
     const encodedMsg = encodeURIComponent(customerMsg);
-    
+
     // Small delay to show loading state
     setTimeout(() => {
       window.open(`https://wa.me/${phone}?text=${encodedMsg}`, "_blank");
       setIsLoading(false);
-      
+
       // Optional: Clear cart after successful order
       localStorage.removeItem("cart");
       // router.push("/order-confirmation");
     }, 500);
   };
 
-  const isFormValid = 
-    customerDetails.name && 
-    customerDetails.contact1 && 
-    customerDetails.address && 
-    customerDetails.district && 
-    customerDetails.state && 
+  const isFormValid =
+    customerDetails.name &&
+    customerDetails.contact1 &&
+    customerDetails.address &&
+    customerDetails.district &&
+    customerDetails.state &&
     customerDetails.pincode;
 
   if (cartItems.length === 0) {
@@ -179,8 +200,10 @@ export default function CheckoutPage() {
               <ShoppingBag className="h-12 w-12 text-muted-foreground" />
             </div>
             <h2 className="text-2xl font-bold mb-2">Your cart is empty</h2>
-            <p className="text-muted-foreground mb-6">Add some stylish shoes to get started!</p>
-            <Button onClick={() => router.push('/')} className="w-full">
+            <p className="text-muted-foreground mb-6">
+              Add some stylish shoes to get started!
+            </p>
+            <Button onClick={() => router.push("/")} className="w-full">
               Continue Shopping
             </Button>
           </CardContent>
@@ -197,7 +220,7 @@ export default function CheckoutPage() {
           description="Review your order and complete your purchase"
           nolink
         />
-        
+
         {/* Progress Steps */}
         <div className="flex items-center justify-center mb-8">
           <div className="flex items-center">
@@ -298,9 +321,7 @@ export default function CheckoutPage() {
                           >
                             {method.name}
                           </Label>
-                          <Badge variant="secondary">
-                            ₹{method.charge}
-                          </Badge>
+                          <Badge variant="secondary">₹{method.charge}</Badge>
                         </div>
                         <p className="text-sm text-muted-foreground">
                           {method.description}
@@ -319,7 +340,8 @@ export default function CheckoutPage() {
               <CardHeader>
                 <CardTitle>Order Summary</CardTitle>
                 <CardDescription>
-                  {cartItems.length} item{cartItems.length > 1 ? 's' : ''} in your order
+                  {cartItems.length} item{cartItems.length > 1 ? "s" : ""} in
+                  your order
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -330,17 +352,25 @@ export default function CheckoutPage() {
                   totalAmount={totalAmount}
                   shippingMethod={shippingMethod}
                 />
-                
+
                 <div className="mt-6 space-y-3">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Delivery Method</span>
+                    <span className="text-muted-foreground">
+                      Delivery Method
+                    </span>
                     <span className="font-medium">
-                      {shippingMethod === 'online' ? 'Online Delivery' : 'Cash on Delivery'}
+                      {shippingMethod === "online"
+                        ? "Online Delivery"
+                        : "Cash on Delivery"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Delivery Time</span>
-                    <span className="font-medium">4-7 business days</span>
+                    <span className="font-medium">
+                      {shippingMethod === "online"
+                        ? "5-8 days"
+                        : "10-15 days (working days)"}
+                    </span>
                   </div>
                 </div>
               </CardContent>
