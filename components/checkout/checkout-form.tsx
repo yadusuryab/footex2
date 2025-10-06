@@ -62,7 +62,7 @@ export const CustomerDetailsForm = ({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="contact2">Contact Number 2 (Optional)</Label>
+        <Label htmlFor="contact2">Contact Number 2</Label>
         <Input
           id="contact2"
           name="contact2"

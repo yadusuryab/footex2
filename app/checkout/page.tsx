@@ -128,32 +128,31 @@ export default function CheckoutPage() {
 
     // Format product messages according to your specified format with proper links
     const productMessages = cartItems
-      .map((item, idx) => {
-        const productLink = `https://footex2.vercel.app/p/${item._id}`;
-        let message = `PAIR ${
-          idx + 1
-        }: ${item.productName.toUpperCase()} | Size: ${
-          item.selectedSize
-        } | Extra: ₹0\n`;
-
-        message += `Link: ${productLink}`;
-
-        if (item.buyOneGetOne && item.freeProduct) {
-          const freeProductLink = `https://footex2.vercel.app/p/${item.freeProduct._id}`;
-          message += `\nPAIR ${
-            idx + 2
-          }: ${item.freeProduct.productName.toUpperCase()} | Size: ${
-            item.freeProduct.selectedSize
-          } | Extra: ₹0\n`;
-          message += `Link: ${freeProductLink}`;
-        }
-
-        return message;
-      })
-      .join("\n\n");
-
-    const customerMsg = `
-  *${cartItems.length} PAIR SHOES ORDER*
+    .map((item, idx) => {
+      const productLink = `https://footex.in/p/${item._id}`;
+      const productPrice = item.price || 999; // Assuming product price, default to 999
+      const extraAmount = productPrice > 999 ? productPrice - 999 : 0;
+      
+      let message = `PAIR ${idx + 1}: ${item.productName.toUpperCase()}\n`;
+      message += `Size: ${item.selectedSize}\n`;
+      message += `Extra: ₹${extraAmount}\n`;
+      message += `Link: ${productLink}`;
+  
+      if (item.buyOneGetOne && item.freeProduct) {
+        const freeProductLink = `https://footex.in/p/${item.freeProduct._id}`;
+        message += `\n\nPAIR ${idx + 2}: ${item.freeProduct.productName.toUpperCase()}\n`;
+        message += `Size: ${item.freeProduct.selectedSize}\n`;
+        message += `Extra: ₹0\n`;
+        message += `Link: ${freeProductLink}`;
+      }
+  
+      return message;
+    })
+    .join("\n\n");
+  
+  const customerMsg = `
+  *2 PAIR SHOES ORDER*
+  
   ${productMessages}
   
   *CUSTOMER DETAILS*
@@ -166,10 +165,11 @@ export default function CheckoutPage() {
   Contact No.1: ${customerDetails.contact1}
   Contact No.2: ${customerDetails.contact2 || "N/A"}
   
-  SHIPPING METHOD: ${shippingMethod === "online" ? "Online" : "COD"}
-  Payment: ₹${shippingCharge}
-  GRAND TOTAL: *₹${totalAmount}*
-    `.trim();
+  *ORDER SUMMARY*
+  Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}
+  Shipping Charge: ₹${shippingCharge}
+  Grand Total: *₹${totalAmount}*
+  `.trim();
 
     const encodedMsg = encodeURIComponent(customerMsg);
 
@@ -187,6 +187,7 @@ export default function CheckoutPage() {
   const isFormValid =
     customerDetails.name &&
     customerDetails.contact1 &&
+    customerDetails.contact2 &&
     customerDetails.address &&
     customerDetails.district &&
     customerDetails.state &&
