@@ -130,46 +130,34 @@ export default function CheckoutPage() {
     const productMessages = cartItems
     .map((item, idx) => {
       const productLink = `https://footex.in/p/${item._id}`;
-      const productPrice = item.price || 999; // Assuming product price, default to 999
+      const productPrice = item.price || 999;
       const extraAmount = productPrice > 999 ? productPrice - 999 : 0;
       
-      let message = `PAIR ${idx + 1}: ${item.productName.toUpperCase()}\n`;
-      message += `Size: ${item.selectedSize}\n`;
-      message += `Extra: ₹${extraAmount}\n`;
-      message += `Link: ${productLink}`;
+      let message = `👟 *PAIR ${idx + 1}*\n`;
+      message += `• Product: ${item.productName.toUpperCase()}\n`;
+      message += `• Size: ${item.selectedSize}\n`;
+      message += `• Extra Amount: ₹${extraAmount}\n`;
+      message += `• Link: ${productLink}`;
   
       if (item.buyOneGetOne && item.freeProduct) {
         const freeProductLink = `https://footex.in/p/${item.freeProduct._id}`;
-        message += `\n\nPAIR ${idx + 2}: ${item.freeProduct.productName.toUpperCase()}\n`;
-        message += `Size: ${item.freeProduct.selectedSize}\n`;
-        message += `Extra: ₹0\n`;
-        message += `Link: ${freeProductLink}`;
+        const freeProductPrice = item.freeProduct.price || 999;
+        const freeProductExtraAmount = freeProductPrice > 999 ? freeProductPrice - 999 : 0;
+        
+        message += `\n\n🎁 *FREE PAIR ${idx + 2} (BOGO)*\n`;
+        message += `• Product: ${item.freeProduct.productName.toUpperCase()}\n`;
+        message += `• Size: ${item.freeProduct.selectedSize}\n`;
+        message += `• Extra Amount: ₹${freeProductExtraAmount}\n`;
+        message += `• Link: ${freeProductLink}`;
       }
   
       return message;
     })
     .join("\n\n");
   
-  const customerMsg = `
-  *2 PAIR SHOES ORDER*
-  
-  ${productMessages}
-  
-  *CUSTOMER DETAILS*
-  Name: ${customerDetails.name}
-  Address: ${customerDetails.address}
-  District: ${customerDetails.district}
-  State: ${customerDetails.state}
-  Pincode: ${customerDetails.pincode}
-  Landmark: ${customerDetails.landmark || "N/A"}
-  Contact No.1: ${customerDetails.contact1}
-  Contact No.2: ${customerDetails.contact2 || "N/A"}
-  
-  *ORDER SUMMARY*
-  Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}
-  Shipping Charge: ₹${shippingCharge}
-  Grand Total: *₹${totalAmount}*
-  `.trim();
+    const customerMsg = `
+    🛍️ *NEW ORDER - 2 PAIR SHOES*\n\n${productMessages}\n\n👤 *CUSTOMER DETAILS*\n• Name: ${customerDetails.name}\n• Address: ${customerDetails.address}\n• District: ${customerDetails.district}\n• State: ${customerDetails.state}\n• Pincode: ${customerDetails.pincode}\n• Landmark: ${customerDetails.landmark || "N/A"}\n• Contact No.1: ${customerDetails.contact1}\n• Contact No.2: ${customerDetails.contact2 || "N/A"}\n\n💰 *ORDER SUMMARY*\n• Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}\n• Shipping Charge: ₹${shippingCharge}\n• Grand Total: *₹${totalAmount}*
+    `.trim();
 
     const encodedMsg = encodeURIComponent(customerMsg);
 
