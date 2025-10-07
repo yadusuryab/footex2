@@ -110,13 +110,13 @@ export default async function ProductPage({ params }: any) {
           )}
 
           {/* Action Buttons */}
-          <div>
+         {/*   <div>
             <Link href={`https://wa.me/${site.phone}?text=${encodeURIComponent(message)}`} target="_blank">
               <Button className="w-full bg-green-500 text-white hover:bg-green-600">
                 <MessageCircle /> Chat via WhatsApp
               </Button>
             </Link>
-          </div>
+          </div> */}
 
           <div className="grid grid-cols-2 gap-2">
             <Link href={`tel:${site.phone}`} target="_blank">
