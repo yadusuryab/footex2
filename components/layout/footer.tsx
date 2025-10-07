@@ -12,11 +12,17 @@ import { Mail, Phone, MapPin, Heart } from "lucide-react";
 import { site } from "@/lib/site-config";
 import Link from "next/link";
 import { IconBrandInstagram, IconBrandWhatsapp } from "@tabler/icons-react";
+import { usePathname } from "next/navigation";
 
 function Footer() {
   const [isChatOpen, setIsChatOpen] = React.useState<string>();
   const currentYear = new Date().getFullYear();
+  const pathname = usePathname(); // Get current path
 
+  // Hide footer on checkout page
+  if (pathname === "/checkout") {
+    return null;
+  }
   return (
     <footer className="relative border-t bg-background text-foreground transition-colors  duration-300">
       {/* Main Footer Content */}
