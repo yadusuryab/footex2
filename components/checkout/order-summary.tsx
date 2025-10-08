@@ -2,7 +2,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { CartItem } from "@/lib/orderUtils";
-import { Truck, Shield, Tag, Package, Gift } from "lucide-react";
+import { Truck, Shield, Tag, Package, Gift, Zap } from "lucide-react";
 
 interface OrderSummaryProps {
   cartItems: CartItem[];
@@ -235,6 +235,40 @@ export const OrderSummary = ({
           <span className="text-lg">₹{totalAmount.toFixed(2)}</span>
         </div>
         
+        {/* Prepaid Offer Banner */}
+        {shippingMethod === "cod" && (
+          <Card className="p-3 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+            <div className="flex items-center gap-3">
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
+                <Zap className="h-4 w-4 text-white" />
+              </div>
+              <div className="flex-1">
+                <div className="flex items-center gap-2 text-sm font-semibold text-purple-800">
+                  <span>Choose prepaid to get ₹200 off!</span>
+                  <Badge className="bg-purple-600 text-white text-xs">SAVE ₹200</Badge>
+                </div>
+                <div className="flex items-center gap-2 text-xs text-purple-600 mt-1">
+                  <Truck className="h-3 w-3" />
+                  <span>Faster than COD • 5-8 days delivery</span>
+                </div>
+              </div>
+            </div>
+          </Card>
+        )}
+
+        {/* Faster Delivery Info for Online */}
+        {shippingMethod === "online" && (
+          <Card className="p-3 bg-green-50 border-green-200">
+            <div className="flex items-center gap-3">
+              <Truck className="h-5 w-5 text-green-600 flex-shrink-0" />
+              <div>
+                <p className="text-sm font-semibold text-green-800">Faster Delivery</p>
+                <p className="text-xs text-green-600">5-8 days • Quicker than COD</p>
+              </div>
+            </div>
+          </Card>
+        )}
+
         {/* Savings Summary */}
         {isBOGO && (
           <Card className="p-3 bg-blue-50 border-blue-200">

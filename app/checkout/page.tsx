@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, ShoppingBag, Truck, CheckCircle2 } from "lucide-react";
+import { Loader2, ShoppingBag, Truck, CheckCircle2, Info, CheckCircle, Zap } from "lucide-react";
 
 import SHeading from "@/components/utils/section-heading";
 import {
@@ -133,7 +133,7 @@ export default function CheckoutPage() {
       const productPrice = item.price || 999;
       const extraAmount = productPrice > 999 ? productPrice - 999 : 0;
       
-      let message = `👟 *PAIR ${idx + 1}*\n`;
+      let message = `*PAIR ${idx + 1}*\n`;
       message += `• Product: ${item.productName.toUpperCase()}\n`;
       message += `• Size: ${item.selectedSize}\n`;
       message += `• Extra Amount: ₹${extraAmount}\n`;
@@ -144,7 +144,7 @@ export default function CheckoutPage() {
         const freeProductPrice = item.freeProduct.price || 999;
         const freeProductExtraAmount = freeProductPrice > 999 ? freeProductPrice - 999 : 0;
         
-        message += `\n\n🎁 *FREE PAIR ${idx + 2} (BOGO)*\n`;
+        message += `\n\n🎁 *PAIR ${idx + 2}*\n`;
         message += `• Product: ${item.freeProduct.productName.toUpperCase()}\n`;
         message += `• Size: ${item.freeProduct.selectedSize}\n`;
         message += `• Extra Amount: ₹${freeProductExtraAmount}\n`;
@@ -156,7 +156,7 @@ export default function CheckoutPage() {
     .join("\n\n");
   
     const customerMsg = `
-    🛍️ *NEW ORDER - 2 PAIR SHOES*\n\n${productMessages}\n\n👤 *CUSTOMER DETAILS*\n• Name: ${customerDetails.name}\n• Address: ${customerDetails.address}\n• District: ${customerDetails.district}\n• State: ${customerDetails.state}\n• Pincode: ${customerDetails.pincode}\n• Landmark: ${customerDetails.landmark || "N/A"}\n• Contact No.1: ${customerDetails.contact1}\n• Contact No.2: ${customerDetails.contact2 || "N/A"}\n\n💰 *ORDER SUMMARY*\n• Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}\n• Shipping Charge: ₹${shippingCharge}\n• Grand Total: *₹${totalAmount}*
+    *2 PAIR SHOES ORDER*\n\n${productMessages}\n\n👤 *CUSTOMER DETAILS*\n• Name: ${customerDetails.name}\n• Address: ${customerDetails.address}\n• District: ${customerDetails.district}\n• State: ${customerDetails.state}\n• Pincode: ${customerDetails.pincode}\n• Landmark: ${customerDetails.landmark || "N/A"}\n• Contact No.1: ${customerDetails.contact1}\n• Contact No.2: ${customerDetails.contact2 || "N/A"}\n\n💰 *ORDER SUMMARY*\n• Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}\n• Shipping Charge: ₹${shippingCharge}\n• Grand Total: *₹${totalAmount}*
     `.trim();
 
     const encodedMsg = encodeURIComponent(customerMsg);
@@ -271,57 +271,119 @@ export default function CheckoutPage() {
             </Card>
 
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Truck className="h-5 w-5" />
-                  Delivery Method
-                </CardTitle>
-                <CardDescription>
-                  Choose how you want to receive your order
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <RadioGroup
-                  value={shippingMethod}
-                  onValueChange={(value: "online" | "cod") => {
-                    setShippingMethod(value);
-                    setShippingCharge(value === "online" ? 100 : 300);
-                  }}
-                  className="space-y-3"
+  <CardHeader>
+    <CardTitle className="flex items-center gap-2">
+      <Truck className="h-5 w-5" />
+      Delivery Method
+    </CardTitle>
+    <CardDescription>
+      Choose how you want to receive your order
+    </CardDescription>
+  </CardHeader>
+  <CardContent>
+    <RadioGroup
+      value={shippingMethod}
+      onValueChange={(value: "online" | "cod") => {
+        setShippingMethod(value);
+        setShippingCharge(value === "online" ? 100 : 300);
+      }}
+      className="space-y-3"
+    >
+      {shippingMethods.map((method) => (
+        <div
+          key={method.id}
+          className={`flex items-center space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all ${
+            shippingMethod === method.id
+              ? "border-primary bg-primary/5"
+              : "border-muted hover:border-primary/50"
+          }`}
+          onClick={() => {
+            setShippingMethod(method.id);
+            setShippingCharge(method.charge);
+          }}
+        >
+          <RadioGroupItem value={method.id} id={method.id} />
+          <div className="flex-1 space-y-1">
+            <div className="flex items-center justify-between">
+              <Label
+                htmlFor={method.id}
+                className="font-medium cursor-pointer"
+              >
+                {method.name}
+              </Label>
+              <div className="flex items-center gap-2">
+                {/* Show original price crossed out for COD when online is selected and vice versa */}
+                {method.id === "online" && shippingMethod === "cod" && (
+                  <span className="text-sm text-muted-foreground line-through">₹300</span>
+                )}
+                <Badge 
+                  variant={method.id === "online" ? "default" : "secondary"}
+                  className={method.id === "online" ? "bg-green-600 text-white" : ""}
                 >
-                  {shippingMethods.map((method) => (
-                    <div
-                      key={method.id}
-                      className={`flex items-center space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all ${
-                        shippingMethod === method.id
-                          ? "border-primary bg-primary/5"
-                          : "border-muted hover:border-primary/50"
-                      }`}
-                      onClick={() => {
-                        setShippingMethod(method.id);
-                        setShippingCharge(method.charge);
-                      }}
-                    >
-                      <RadioGroupItem value={method.id} id={method.id} />
-                      <div className="flex-1 space-y-1">
-                        <div className="flex items-center justify-between">
-                          <Label
-                            htmlFor={method.id}
-                            className="font-medium cursor-pointer"
-                          >
-                            {method.name}
-                          </Label>
-                          <Badge variant="secondary">₹{method.charge}</Badge>
-                        </div>
-                        <p className="text-sm text-muted-foreground">
-                          {method.description}
-                        </p>
-                      </div>
-                    </div>
-                  ))}
-                </RadioGroup>
-              </CardContent>
-            </Card>
+                  ₹{method.charge}
+                </Badge>
+              </div>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {method.description}
+            </p>
+            
+            {/* Promotional Messages */}
+            {method.id === "online" && (
+              <div className="flex items-center gap-2 mt-2">
+                <div className="flex items-center gap-1 text-xs text-green-600 font-medium">
+                  <Zap className="h-3 w-3" />
+                  <span>Save ₹200</span>
+                </div>
+                <div className="flex items-center gap-1 text-xs text-blue-600">
+                  <Truck className="h-3 w-3" />
+                  <span>Faster delivery (5-8 days)</span>
+                </div>
+              </div>
+            )}
+            
+            {method.id === "cod" && shippingMethod === "cod" && (
+              <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
+                <div className="flex items-center gap-2 text-xs">
+                  <Info className="h-3 w-3 text-amber-600" />
+                  <div>
+                    <p className="text-amber-800 font-medium">
+                      Choose prepaid to get ₹200 off!
+                    </p>
+                    <p className="text-amber-600">
+                      Faster delivery with online payment
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+    </RadioGroup>
+    
+    {/* Summary Banner */}
+    {shippingMethod === "online" && (
+      <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+        <div className="flex items-center gap-2 text-sm text-green-800">
+          <CheckCircle className="h-4 w-4 text-green-600" />
+          <span className="font-semibold">Great choice!</span>
+          <span>You saved ₹200 with faster delivery</span>
+        </div>
+      </div>
+    )}
+    
+    {shippingMethod === "cod" && (
+      <div className="mt-4 p-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
+        <div className="flex items-center gap-2 text-sm text-blue-800">
+          <Info className="h-4 w-4 text-blue-600" />
+          <span className="font-semibold">Want faster delivery?</span>
+          <span>Switch to prepaid to save ₹200 and get quicker shipping</span>
+        </div>
+      </div>
+    )}
+  </CardContent>
+</Card>
           </div>
 
           {/* Right Column - Order Summary */}

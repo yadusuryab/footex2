@@ -81,7 +81,7 @@ export default function CartItem({ item, onRemove }: CartItemProps) {
 
                 {/* Price and Actions */}
                 <div className="flex flex-col items-end gap-2">
-                  <div className="text-right">
+                  {/* <div className="text-right">
                     {hasDiscount ? (
                       <div className="flex flex-col items-end">
                         <span className="font-bold text-lg">₹{item.offerPrice}</span>
@@ -92,7 +92,7 @@ export default function CartItem({ item, onRemove }: CartItemProps) {
                     ) : (
                       <span className="font-bold text-lg">₹{item.price}</span>
                     )}
-                  </div>
+                  </div> */}
                   
                   {onRemove && (
                     <Button 
@@ -129,7 +129,7 @@ export default function CartItem({ item, onRemove }: CartItemProps) {
                   <div className="absolute inset-0 bg-green-600/0 group-hover:bg-green-600/10 transition-colors duration-200" />
                   
                   {/* Free Badge */}
-                  <Badge className="absolute -top-2 -right-2 bg-green-600 text-white border-0 shadow-sm">
+                  <Badge className="absolute -top-2   -right-2 bg-green-600 text-white border-0 shadow-sm">
                     FREE
                   </Badge>
                 </Link>
@@ -156,19 +156,19 @@ export default function CartItem({ item, onRemove }: CartItemProps) {
                             Size: {item.freeProduct.selectedSize}
                           </Badge>
                         )}
-                        <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
+                        {/* <Badge variant="secondary" className="text-xs bg-green-100 text-green-700">
                           COMPLIMENTARY
-                        </Badge>
+                        </Badge> */}
                       </div>
                     </div>
 
                     {/* Free Product Price */}
-                    <div className="text-right">
+                    {/* <div className="text-right">
                       <div className="flex flex-col items-end">
                         <span className="font-bold text-lg text-green-600">₹0</span>
                         <span className="text-sm text-green-500">Free Gift</span>
                       </div>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
