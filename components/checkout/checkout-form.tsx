@@ -11,6 +11,7 @@ interface CustomerDetailsFormProps {
     address: string;
     district: string;
     state: string;
+    instagramId:string;
     pincode: string;
     landmark: string;
   };
@@ -68,6 +69,16 @@ export const CustomerDetailsForm = ({
           name="contact2"
           placeholder="Secondary phone number"
           value={customerDetails.contact2}
+          onChange={handleInputChange}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="contact2">Instagram ID</Label>
+        <Input
+          id="instagramId"
+          name="instagramId"
+          placeholder="Instagram ID"
+          value={customerDetails.instagramId}
           onChange={handleInputChange}
         />
       </div>
