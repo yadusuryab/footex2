@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <head>
         {/* ✅ Add Meta Pixel script */}
-        <Script
+        {/* <Script
           id="meta-pixel"
           strategy="afterInteractive"
           dangerouslySetInnerHTML={{
@@ -45,7 +45,6 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* ✅ Optional fallback for users with no JS */}
         <noscript>
           <img
             height="1"
@@ -53,7 +52,7 @@ export default function RootLayout({
             style={{ display: "none" }}
             src="https://www.facebook.com/tr?id=1386100692693528&ev=PageView&noscript=1"
           />
-        </noscript>
+        </noscript> */}
       </head>
 
       <body className={`${inter.className} antialiased`}>

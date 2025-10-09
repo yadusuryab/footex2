@@ -44,107 +44,66 @@ export default function CartPage() {
     window.dispatchEvent(new Event("cartUpdated"));
   };
 
-  // Calculate total amount (only paid items: ₹999 + extra charges)
+  // Calculate total amount
   const calculateTotalAmount = () => 
     cartItems.reduce((total, item) => {
       const productPrice = item.offerPrice || item.price;
       const extraAmount = Math.max(0, productPrice - 999);
       
-      // Only charge for the main product (₹999 + extra charges)
       let itemTotal = 999 + extraAmount;
 
-      // Free products get their extra charges added too
       if (item.buyOneGetOne && item.freeProduct) {
         const freeProductPrice = item.freeProduct.price || 999;
         const freeProductExtraAmount = Math.max(0, freeProductPrice - 999);
-        itemTotal += freeProductExtraAmount; // Only add extra charges for free product
+        itemTotal += freeProductExtraAmount;
       }
 
       return total + itemTotal;
-    }, 0);
-
-  // Calculate base price for paid items only
-  const calculateBasePrice = () => 
-    cartItems.length * 999; // Only count paid items
-
-  // Calculate total extra amount for all products (paid + free)
-  const calculateTotalExtraAmount = () => 
-    cartItems.reduce((total, item) => {
-      const productPrice = item.offerPrice || item.price;
-      const extraAmount = Math.max(0, productPrice - 999);
-      
-      let totalExtra = extraAmount;
-
-      // Free product extra amount
-      if (item.buyOneGetOne && item.freeProduct) {
-        const freeProductPrice = item.freeProduct.price || 999;
-        const freeProductExtraAmount = Math.max(0, freeProductPrice - 999);
-        totalExtra += freeProductExtraAmount;
-      }
-
-      return total + totalExtra;
     }, 0);
 
   // Calculate total items including free products
   const calculateTotalItems = () => 
     cartItems.reduce((total, item) => total + (item.buyOneGetOne && item.freeProduct ? 2 : 1), 0);
 
-  // Calculate total paid items (excluding free products)
-  const calculatePaidItems = () => cartItems.length;
-
   // Calculate free items count
   const calculateFreeItems = () => 
     cartItems.filter(item => item.buyOneGetOne && item.freeProduct).length;
 
-  // Calculate savings from BOGO (base value of free products)
-  const calculateBOGOSavings = () => 
-    cartItems.reduce((total, item) => {
-      if (item.buyOneGetOne && item.freeProduct) {
-        return total + 999; // Base value of free product
-      }
-      return total;
-    }, 0);
-
-  // Calculate discount savings (from offer prices)
-  const calculateDiscountSavings = () => {
-    const originalTotal = cartItems.reduce((total, item) => total + item.price, 0);
-    const currentTotal = cartItems.reduce((total, item) => total + (item.offerPrice || item.price), 0);
-    return Math.max(0, originalTotal - currentTotal);
-  };
-
-  // Get detailed breakdown of extra charges
-  const getDetailedExtraCharges = () => {
-    return cartItems.map((item) => {
+  // Get product breakdown for the summary
+  const getProductBreakdown = () => {
+    return cartItems.flatMap((item) => {
       const productPrice = item.offerPrice || item.price;
       const extraAmount = Math.max(0, productPrice - 999);
       
-      let freeProductExtraAmount = 0;
-      let freeProductName = '';
-      
+      const items = [{
+        name: item.productName,
+        type: 'main' ,
+        price: 999,
+        extraAmount: extraAmount,
+        isPremium: extraAmount > 0
+      }];
+
       if (item.buyOneGetOne && item.freeProduct) {
         const freeProductPrice = item.freeProduct.price || 999;
-        freeProductExtraAmount = Math.max(0, freeProductPrice - 999);
-        freeProductName = item.freeProduct.productName;
+        const freeProductExtraAmount = Math.max(0, freeProductPrice - 999);
+        
+        items.push({
+          name: item.freeProduct.productName,
+          type: 'free' as const,
+          price: 0,
+          extraAmount: freeProductExtraAmount,
+          isPremium: freeProductExtraAmount > 0
+        });
       }
 
-      return {
-        mainProduct: {
-          name: item.productName,
-          extraAmount: extraAmount
-        },
-        freeProduct: freeProductName ? {
-          name: freeProductName,
-          extraAmount: freeProductExtraAmount
-        } : null,
-        totalExtra: extraAmount + freeProductExtraAmount
-      };
+      return items;
     });
   };
 
   const hasBOGO = cartItems.some(item => item.buyOneGetOne);
-  const hasExtraCharges = calculateTotalExtraAmount() > 0;
-  const totalSavings = calculateBOGOSavings() + calculateDiscountSavings();
-  const detailedExtraCharges = getDetailedExtraCharges();
+  const productBreakdown = getProductBreakdown();
+  const totalBasePrice = cartItems.length * 999;
+  const totalExtraAmount = productBreakdown.reduce((total, item) => total + item.extraAmount, 0);
 
   if (isLoading) {
     return (
@@ -218,17 +177,17 @@ export default function CartPage() {
 
             {/* Continue Shopping */}
             <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between">
+              <CardContent className="p-2">
+                <div className="flex items-center justify-around">
                   <div>
-                    <h3 className="font-semibold">Need more items?</h3>
-                    <p className="text-sm text-muted-foreground">
+                    <h3 className="font-semibold xs">Need more items?</h3>
+                    <p className="text-xs text-muted-foreground">
                       Continue shopping to add more products to your order
                     </p>
                   </div>
                   <Link href="/">
-                    <Button variant="outline" className="gap-2">
-                      <ShoppingBag className="h-4 w-4" />
+                    <Button variant="outline" size={'sm'} className="text-xs">
+                      <ShoppingBag />
                       Continue Shopping
                     </Button>
                   </Link>
@@ -240,139 +199,73 @@ export default function CartPage() {
           {/* Order Summary Sidebar */}
           <div className="space-y-6">
             <Card className="sticky top-6">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-lg">
                   <ShoppingBag className="h-5 w-5" />
                   Order Summary
                 </CardTitle>
-                <CardDescription>
-                  Detailed breakdown of your order
-                </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                {/* Base Price Breakdown */}
+                {/* Products Breakdown */}
                 <div className="space-y-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Base Price ({calculatePaidItems()} paid items × ₹999)
-                    </span>
-                    <span>₹{calculateBasePrice()}</span>
-                  </div>
-
-                  {/* Free Items Note */}
-                  {hasBOGO && (
-                    <div className="flex justify-between text-sm text-green-600">
-                      <span className="text-muted-foreground">
-                        + Free Items ({calculateFreeItems()} products)
-                      </span>
-                      <span>₹0</span>
-                    </div>
-                  )}
-
-                  {/* Total Items Summary */}
-                  <div className="flex justify-between text-sm font-medium border-b pb-2">
-                    <span>Total Items ({calculateTotalItems()} items)</span>
-                    <span>₹{calculateBasePrice()}</span>
-                  </div>
-                </div>
-
-                {/* Extra Charges Section */}
-                {hasExtraCharges && (
-                  <div className="space-y-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
-                    <div className="flex items-center gap-2 text-sm font-medium text-amber-800">
-                      <Info className="h-4 w-4" />
-                      <span>Premium Product Charges</span>
-                    </div>
-                    
-                    <div className="space-y-2 text-sm text-amber-700">
-                      {detailedExtraCharges.map((detail, index) => {
-                        if (detail.totalExtra === 0) return null;
-                        
-                        return (
-                          <div key={index} className="space-y-1">
-                            {/* Main Product Extra */}
-                            {detail.mainProduct.extraAmount > 0 && (
-                              <div className="flex justify-between">
-                                <span className="flex-1 pr-2">
-                                  <span className="font-medium">{detail.mainProduct.name}</span>
-                                  <span className="text-xs block text-amber-600">(Premium upgrade)</span>
-                                </span>
-                                <span className="font-medium whitespace-nowrap">
-                                  +₹{detail.mainProduct.extraAmount}
-                                </span>
-                              </div>
-                            )}
-                            
-                            {/* Free Product Extra */}
-                            {detail.freeProduct && detail.freeProduct.extraAmount > 0 && (
-                              <div className="flex justify-between">
-                                <span className="flex-1 pr-2">
-                                  <span className="font-medium">{detail.freeProduct.name}</span>
-                                  <span className="text-xs block text-amber-600">(Free product premium upgrade)</span>
-                                </span>
-                                <span className="font-medium whitespace-nowrap">
-                                  +₹{detail.freeProduct.extraAmount}
-                                </span>
-                              </div>
-                            )}
+                  {productBreakdown.map((product, index) => (
+                    <div key={index} className="flex justify-between items-start text-sm">
+                      <div className="flex-1 pr-2">
+                        <div className="flex items-center gap-1">
+                          <span className="font-medium">{product.name}</span>
+                          {product.type === 'free' && (
+                            <Badge variant="outline" className="text-xs bg-green-50 text-green-700">
+                              FREE
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          {product.type === 'main' && (
+                            <span className="text-xs text-muted-foreground">Base: ₹999</span>
+                          )}
+                          {product.isPremium && (
+                            <Badge variant="secondary" className="text-xs bg-amber-50 text-amber-700">
+                              +₹{product.extraAmount} extra
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <div className="font-medium">
+                          {product.type === 'free' ? '₹0' : `₹${999 + product.extraAmount}`}
+                        </div>
+                        {product.type === 'free' && product.extraAmount > 0 && (
+                          <div className="text-xs text-amber-600">
+                            +₹{product.extraAmount} extra
                           </div>
-                        );
-                      })}
+                        )}
+                      </div>
                     </div>
-
-                    <div className="flex justify-between text-sm font-medium text-amber-800 border-t border-amber-300 pt-2">
-                      <span>Total Extra Charges</span>
-                      <span>+₹{calculateTotalExtraAmount()}</span>
-                    </div>
-                  </div>
-                )}
+                  ))}
+                </div>
 
                 <Separator />
 
-                {/* Subtotal */}
-                <div className="flex justify-between text-base font-semibold">
-                  <span>Subtotal</span>
-                  <span>₹{calculateTotalAmount()}</span>
-                </div>
-
-                {/* Savings Breakdown */}
-                {(calculateDiscountSavings() > 0 || hasBOGO) && (
-                  <div className="space-y-2 p-3 bg-green-50 rounded-lg border border-green-200">
-                    <div className="flex items-center gap-2 text-sm font-medium text-green-800">
-                      <Tag className="h-4 w-4" />
-                      <span>Your Savings</span>
-                    </div>
-                    
-                    <div className="space-y-1 text-xs text-green-700">
-                      {calculateDiscountSavings() > 0 && (
-                        <div className="flex justify-between">
-                          <span>Discounts Applied</span>
-                          <span>-₹{calculateDiscountSavings()}</span>
-                        </div>
-                      )}
-                      
-                      {hasBOGO && (
-                        <div className="flex justify-between">
-                          <span>BOGO Free Products ({calculateFreeItems()} items)</span>
-                          <span>-₹{calculateBOGOSavings()}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex justify-between text-sm font-medium text-green-800 border-t border-green-300 pt-2">
-                      <span>Total Savings</span>
-                      <span>-₹{totalSavings}</span>
-                    </div>
+                {/* Totals */}
+                <div className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-muted-foreground">Base Price</span>
+                    <span>₹{totalBasePrice}</span>
                   </div>
-                )}
+                  
+                  {totalExtraAmount > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-muted-foreground">Premium Charges</span>
+                      <span className="text-amber-600">+₹{totalExtraAmount}</span>
+                    </div>
+                  )}
 
-                {/* Shipping */}
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground flex items-center gap-1">
-                    <Truck className="h-3 w-3" />
-                    Estimated Shipping
-                  </span>
-                  <span className="text-green-600">Calculated at checkout</span>
+                  {hasBOGO && (
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>Free Products Savings</span>
+                      <span>-₹{calculateFreeItems() * 999}</span>
+                    </div>
+                  )}
                 </div>
 
                 <Separator />
@@ -383,26 +276,25 @@ export default function CartPage() {
                   <span>₹{calculateTotalAmount()}</span>
                 </div>
 
-                {/* Pricing Explanation */}
-                <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+                {/* Summary Note */}
+                {/* <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
                   <div className="flex items-start gap-2 text-xs text-blue-700">
                     <Info className="h-3 w-3 mt-0.5 flex-shrink-0" />
-                    <div className="space-y-1">
-                      <p className="font-medium">How pricing works:</p>
+                    <div>
+                      <p className="font-medium mb-1">Pricing Summary:</p>
                       <ul className="space-y-1">
-                        <li>• You pay ₹999 base price for each product you add to cart</li>
-                        <li>• Premium products have extra charges above ₹999</li>
-                        <li>• BOGO offers give you free products (only pay extra charges if premium)</li>
-                        <li>• Extra charges apply to premium free products too</li>
+                        <li>• All products start at ₹999 base price</li>
+                        <li>• Premium products have extra charges</li>
+                        <li>• Free products only charge extra fees</li>
                       </ul>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </CardContent>
               <CardFooter className="flex flex-col space-y-3">
                 <Link href="/checkout" className="w-full">
                   <Button className="w-full" size="lg">
-                    Proceed to Checkout - ₹{calculateTotalAmount()}
+                    Checkout - ₹{calculateTotalAmount()}
                     <ArrowRight className="h-4 w-4 ml-2" />
                   </Button>
                 </Link>
@@ -412,14 +304,9 @@ export default function CartPage() {
                     <Shield className="h-3 w-3" />
                     Secure checkout
                   </p>
-                  {hasExtraCharges && (
-                    <p className="text-amber-600">
-                      Includes extra charges for premium products
-                    </p>
-                  )}
                   {hasBOGO && (
                     <p className="text-green-600">
-                      You're getting {calculateFreeItems()} free product{calculateFreeItems() !== 1 ? 's' : ''}!
+                      You saved ₹{calculateFreeItems() * 999} with free products!
                     </p>
                   )}
                 </div>
@@ -434,19 +321,19 @@ export default function CartPage() {
                     <div className="w-8 h-8 bg-background rounded-full flex items-center justify-center mx-auto mb-1">
                       <Star className="h-4 w-4" />
                     </div>
-                    <span>Quality Guaranteed</span>
+                    <span>Quality</span>
                   </div>
                   <div>
                     <div className="w-8 h-8 bg-background rounded-full flex items-center justify-center mx-auto mb-1">
                       <Shield className="h-4 w-4" />
                     </div>
-                    <span>Secure Payment</span>
+                    <span>Secure</span>
                   </div>
                   <div>
                     <div className="w-8 h-8 bg-background rounded-full flex items-center justify-center mx-auto mb-1">
-                      <Tag className="h-4 w-4" />
+                      <Truck className="h-4 w-4" />
                     </div>
-                    <span>Best Price</span>
+                    <span>Fast Delivery</span>
                   </div>
                 </div>
               </CardContent>

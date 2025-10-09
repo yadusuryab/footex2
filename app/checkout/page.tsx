@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -13,7 +13,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, ShoppingBag, Truck, CheckCircle2, Info, CheckCircle, Zap } from "lucide-react";
+import { Loader2, ShoppingBag, Truck, CheckCircle2, Info, CheckCircle, Zap, ArrowRight } from "lucide-react";
 
 import SHeading from "@/components/utils/section-heading";
 import {
@@ -39,8 +39,8 @@ interface ShippingMethod {
 const shippingMethods: ShippingMethod[] = [
   {
     id: "online",
-    name: "Online Delivery",
-    description: "Fast delivery with online payment",
+    name: "Online Payment",
+    description: "Pay now & get faster delivery",
     charge: 100,
     icon: <CheckCircle2 className="h-5 w-5" />,
   },
@@ -53,13 +53,14 @@ const shippingMethods: ShippingMethod[] = [
   },
 ];
 
+type CheckoutStep = "payment" | "details";
+
 export default function CheckoutPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [shippingMethod, setShippingMethod] = useState<"online" | "cod">(
-    "online"
-  );
+  const [shippingMethod, setShippingMethod] = useState<"online" | "cod">("online");
   const [shippingCharge, setShippingCharge] = useState(100);
+  const [currentStep, setCurrentStep] = useState<CheckoutStep>("payment");
   const [customerDetails, setCustomerDetails] = useState({
     name: "",
     email: "",
@@ -70,6 +71,7 @@ export default function CheckoutPage() {
     state: "",
     pincode: "",
     landmark: "",
+    instagramId: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [formErrors, setFormErrors] = useState<string[]>([]);
@@ -87,7 +89,6 @@ export default function CheckoutPage() {
   ) => {
     const { name, value } = e.target;
     setCustomerDetails((prev) => ({ ...prev, [name]: value }));
-    // Clear errors when user starts typing
     if (formErrors.length > 0) {
       setFormErrors([]);
     }
@@ -97,17 +98,14 @@ export default function CheckoutPage() {
     const errors: string[] = [];
 
     if (!customerDetails.name.trim()) errors.push("Name is required");
-    if (!customerDetails.contact1.trim())
-      errors.push("Contact number is required");
+    if (!customerDetails.contact1.trim()) errors.push("Contact number is required");
     if (!customerDetails.address.trim()) errors.push("Address is required");
     if (!customerDetails.district.trim()) errors.push("District is required");
     if (!customerDetails.state.trim()) errors.push("State is required");
     if (!customerDetails.pincode.trim()) errors.push("Pincode is required");
+    if (!customerDetails.instagramId.trim()) errors.push("Instagram ID is required");
 
-    if (
-      customerDetails.contact1 &&
-      !/^\d{10}$/.test(customerDetails.contact1)
-    ) {
+    if (customerDetails.contact1 && !/^\d{10}$/.test(customerDetails.contact1)) {
       errors.push("Contact number must be 10 digits");
     }
 
@@ -126,7 +124,6 @@ export default function CheckoutPage() {
 
     const phone = site.phone;
 
-    // Format product messages according to your specified format with proper links
     const productMessages = cartItems
     .map((item, idx) => {
       const productLink = `https://footex.in/p/${item._id}`;
@@ -156,30 +153,39 @@ export default function CheckoutPage() {
     .join("\n\n");
   
     const customerMsg = `
-    *2 PAIR SHOES ORDER*\n\n${productMessages}\n\n👤 *CUSTOMER DETAILS*\nName: ${customerDetails.name}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n💰 *ORDER SUMMARY*\nShipping Method: ${shippingMethod === "online" ? "Online" : "COD"}\nShipping Charge: ₹${shippingCharge}\nGrand Total: *₹${totalAmount}*
+    *2 PAIR SHOES ORDER*\n\n${productMessages}\n\n👤 *CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n💰 *ORDER SUMMARY*\nShipping Method: ${shippingMethod === "online" ? "Online" : "COD"}\nShipping Charge: ₹${shippingCharge}\nGrand Total: *₹${totalAmount}*
     `.trim();
 
     const encodedMsg = encodeURIComponent(customerMsg);
 
-    // Small delay to show loading state
     setTimeout(() => {
       window.open(`https://wa.me/${phone}?text=${encodedMsg}`, "_blank");
       setIsLoading(false);
-
-      // Optional: Clear cart after successful order
       localStorage.removeItem("cart");
-      // router.push("/order-confirmation");
     }, 500);
   };
 
   const isFormValid =
     customerDetails.name &&
     customerDetails.contact1 &&
-    customerDetails.contact2 &&
     customerDetails.address &&
     customerDetails.district &&
     customerDetails.state &&
-    customerDetails.pincode;
+    customerDetails.pincode &&
+    customerDetails.instagramId;
+
+  // Auto scroll to top when step changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentStep]);
+
+  const handleContinue = () => {
+    if (currentStep === "payment") {
+      setCurrentStep("details");
+    } else {
+      handleWhatsAppOrder();
+    }
+  };
 
   if (cartItems.length === 0) {
     return (
@@ -202,40 +208,173 @@ export default function CheckoutPage() {
     );
   }
 
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case "payment":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5" />
+                Select Payment Method
+              </CardTitle>
+              <CardDescription>
+                Choose how you want to pay for your order
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RadioGroup
+                value={shippingMethod}
+                onValueChange={(value: "online" | "cod") => {
+                  setShippingMethod(value);
+                  setShippingCharge(value === "online" ? 100 : 300);
+                }}
+                className="space-y-3"
+              >
+                {shippingMethods.map((method) => (
+                  <div
+                    key={method.id}
+                    className={`flex items-center space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all ${
+                      shippingMethod === method.id
+                        ? "border-primary bg-primary/5"
+                        : "border-muted hover:border-primary/50"
+                    }`}
+                    onClick={() => {
+                      setShippingMethod(method.id);
+                      setShippingCharge(method.charge);
+                    }}
+                  >
+                    <RadioGroupItem value={method.id} id={method.id} />
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center justify-between">
+                        <Label
+                          htmlFor={method.id}
+                          className="font-medium cursor-pointer"
+                        >
+                          {method.name}
+                        </Label>
+                        <div className="flex items-center gap-2">
+                          {method.id === "online" && shippingMethod === "cod" && (
+                            <span className="text-sm text-muted-foreground line-through">₹300</span>
+                          )}
+                          <Badge 
+                            variant={method.id === "online" ? "default" : "secondary"}
+                            className={method.id === "online" ? "bg-green-600 text-white" : ""}
+                          >
+                            ₹{method.charge}
+                          </Badge>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground">
+                        {method.description}
+                      </p>
+                      
+                      {method.id === "online" && (
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center gap-1 text-xs text-green-600 font-medium">
+                            <Zap className="h-3 w-3" />
+                            <span>Save ₹200</span>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs text-blue-600">
+                            <Truck className="h-3 w-3" />
+                            <span>Faster delivery (5-8 days)</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </RadioGroup>
+              
+              {shippingMethod === "online" && (
+                <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
+                  <div className="flex items-center gap-2 text-sm text-green-800">
+                    <CheckCircle className="h-4 w-4 text-green-600" />
+                    <span className="font-semibold">Great choice!</span>
+                    <span>You saved ₹200 with faster delivery</span>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        );
+
+      case "details":
+        return (
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5" />
+                Delivery Information
+              </CardTitle>
+              <CardDescription>
+                Enter your details for order delivery
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <CustomerDetailsForm
+                customerDetails={customerDetails}
+                handleInputChange={handleInputChange}
+              />
+            </CardContent>
+          </Card>
+        );
+    }
+  };
+
+  const getStepProgress = () => {
+    const steps = [
+      { number: 1, label: "Payment", key: "payment" as CheckoutStep },
+      { number: 2, label: "Details", key: "details" as CheckoutStep },
+    ];
+
+    return (
+      <div className="flex items-center justify-center mb-8">
+        <div className="flex items-center">
+          {steps.map((step, index) => (
+            <React.Fragment key={step.key}>
+              <div className="flex flex-col items-center">
+                <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-medium ${
+                  currentStep === step.key 
+                    ? "bg-primary text-primary-foreground" 
+                    : steps.findIndex(s => s.key === currentStep) > index
+                    ? "bg-green-500 text-white"
+                    : "bg-muted text-muted-foreground"
+                }`}>
+                  {steps.findIndex(s => s.key === currentStep) > index ? (
+                    <CheckCircle2 className="h-5 w-5" />
+                  ) : (
+                    step.number
+                  )}
+                </div>
+                <span className="text-xs mt-2">{step.label}</span>
+              </div>
+              {index < steps.length - 1 && (
+                <div className={`w-16 h-1 mx-2 ${
+                  steps.findIndex(s => s.key === currentStep) > index 
+                    ? "bg-green-500" 
+                    : currentStep === step.key
+                    ? "bg-primary"
+                    : "bg-muted"
+                }`}></div>
+              )}
+            </React.Fragment>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
   return (
-    <main className="container mx-auto md:px-16 px-2  min-h-screen pb-24">
+    <main className="container mx-auto md:px-16 px-2 min-h-screen pb-24">
       <div className="py-6">
         <SHeading
           title="Checkout"
-          description="Review your order and complete your purchase"
+          description="Complete your purchase in 2 simple steps"
           nolink
         />
 
-        {/* Progress Steps */}
-        <div className="flex items-center justify-center mb-8">
-          <div className="flex items-center">
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-                1
-              </div>
-              <span className="text-xs mt-2">Cart</span>
-            </div>
-            <div className="w-16 h-1 bg-primary mx-2"></div>
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm font-medium">
-                2
-              </div>
-              <span className="text-xs mt-2">Details</span>
-            </div>
-            <div className="w-16 h-1 bg-muted mx-2"></div>
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-muted text-muted-foreground flex items-center justify-center text-sm font-medium">
-                3
-              </div>
-              <span className="text-xs mt-2">Complete</span>
-            </div>
-          </div>
-        </div>
+        {getStepProgress()}
 
         {formErrors.length > 0 && (
           <Alert variant="destructive" className="mb-6">
@@ -250,140 +389,9 @@ export default function CheckoutPage() {
         )}
 
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
-          {/* Left Column - Forms */}
+          {/* Left Column - Step Content */}
           <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle2 className="h-5 w-5" />
-                  Customer Information
-                </CardTitle>
-                <CardDescription>
-                  Enter your details for order delivery
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <CustomerDetailsForm
-                  customerDetails={customerDetails}
-                  handleInputChange={handleInputChange}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-  <CardHeader>
-    <CardTitle className="flex items-center gap-2">
-      <Truck className="h-5 w-5" />
-      Delivery Method
-    </CardTitle>
-    <CardDescription>
-      Choose how you want to receive your order
-    </CardDescription>
-  </CardHeader>
-  <CardContent>
-    <RadioGroup
-      value={shippingMethod}
-      onValueChange={(value: "online" | "cod") => {
-        setShippingMethod(value);
-        setShippingCharge(value === "online" ? 100 : 300);
-      }}
-      className="space-y-3"
-    >
-      {shippingMethods.map((method) => (
-        <div
-          key={method.id}
-          className={`flex items-center space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all ${
-            shippingMethod === method.id
-              ? "border-primary bg-primary/5"
-              : "border-muted hover:border-primary/50"
-          }`}
-          onClick={() => {
-            setShippingMethod(method.id);
-            setShippingCharge(method.charge);
-          }}
-        >
-          <RadioGroupItem value={method.id} id={method.id} />
-          <div className="flex-1 space-y-1">
-            <div className="flex items-center justify-between">
-              <Label
-                htmlFor={method.id}
-                className="font-medium cursor-pointer"
-              >
-                {method.name}
-              </Label>
-              <div className="flex items-center gap-2">
-                {/* Show original price crossed out for COD when online is selected and vice versa */}
-                {method.id === "online" && shippingMethod === "cod" && (
-                  <span className="text-sm text-muted-foreground line-through">₹300</span>
-                )}
-                <Badge 
-                  variant={method.id === "online" ? "default" : "secondary"}
-                  className={method.id === "online" ? "bg-green-600 text-white" : ""}
-                >
-                  ₹{method.charge}
-                </Badge>
-              </div>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              {method.description}
-            </p>
-            
-            {/* Promotional Messages */}
-            {method.id === "online" && (
-              <div className="flex items-center gap-2 mt-2">
-                <div className="flex items-center gap-1 text-xs text-green-600 font-medium">
-                  <Zap className="h-3 w-3" />
-                  <span>Save ₹200</span>
-                </div>
-                <div className="flex items-center gap-1 text-xs text-blue-600">
-                  <Truck className="h-3 w-3" />
-                  <span>Faster delivery (5-8 days)</span>
-                </div>
-              </div>
-            )}
-            
-            {method.id === "cod" && shippingMethod === "cod" && (
-              <div className="mt-2 p-2 bg-amber-50 border border-amber-200 rounded-md">
-                <div className="flex items-center gap-2 text-xs">
-                  <Info className="h-3 w-3 text-amber-600" />
-                  <div>
-                    <p className="text-amber-800 font-medium">
-                      Choose prepaid to get ₹200 off!
-                    </p>
-                    <p className="text-amber-600">
-                      Faster delivery with online payment
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      ))}
-    </RadioGroup>
-    
-    {/* Summary Banner */}
-    {shippingMethod === "online" && (
-      <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-        <div className="flex items-center gap-2 text-sm text-green-800">
-          <CheckCircle className="h-4 w-4 text-green-600" />
-          <span className="font-semibold">Great choice!</span>
-          <span>You saved ₹200 with faster delivery</span>
-        </div>
-      </div>
-    )}
-    
-    {shippingMethod === "cod" && (
-      <div className="mt-4 p-3 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg">
-        <div className="flex items-center gap-2 text-sm text-blue-800">
-          <Info className="h-4 w-4 text-blue-600" />
-          <span className="font-semibold">Want faster delivery?</span>
-          <span>Switch to prepaid to save ₹200 and get quicker shipping</span>
-        </div>
-      </div>
-    )}
-  </CardContent>
-</Card>
+            {renderStepContent()}
           </div>
 
           {/* Right Column - Order Summary */}
@@ -392,8 +400,7 @@ export default function CheckoutPage() {
               <CardHeader>
                 <CardTitle>Order Summary</CardTitle>
                 <CardDescription>
-                  {cartItems.length} item{cartItems.length > 1 ? "s" : ""} in
-                  your order
+                  {cartItems.length} item{cartItems.length > 1 ? "s" : ""} in your order
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -404,29 +411,24 @@ export default function CheckoutPage() {
                   totalAmount={totalAmount}
                   shippingMethod={shippingMethod}
                 />
-
-                <div className="mt-6 space-y-3">
+                
+                {/* Simple Payment Method Display */}
+                <div className="mt-6 p-4 bg-muted/30 rounded-lg space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">
-                      Delivery Method
-                    </span>
+                    <span className="text-muted-foreground">Payment Method</span>
                     <span className="font-medium">
-                      {shippingMethod === "online"
-                        ? "Online Delivery"
-                        : "Cash on Delivery"}
+                      {shippingMethod === "online" ? "Online Payment" : "Cash on Delivery"}
                     </span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-muted-foreground">Delivery Time</span>
                     <span className="font-medium">
-                      {shippingMethod === "online"
-                        ? "5-8 days (business days)"
-                        : "10-15 days (business days)"}
+                      {shippingMethod === "online" ? "5-8 days" : "10-15 days"}
                     </span>
                   </div>
-                  <div className="text-muted-foreground">
-    By placing this order you agree to our <Link target="_blank" href="/T&C" className="underline">terms and conditions</Link>.
-</div>
+                  <div className="text-xs text-muted-foreground pt-2 border-t">
+                    By placing this order you agree to our <Link target="_blank" href="/T&C" className="underline">terms and conditions</Link>.
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -434,27 +436,41 @@ export default function CheckoutPage() {
         </div>
       </div>
 
-      {/* Fixed Bottom Button */}
+      {/* Fixed Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t p-4">
         <div className="container mx-auto md:px-16 md:max-w-[700px]">
-          <Button
-            onClick={handleWhatsAppOrder}
-            disabled={!isFormValid || isLoading}
-            className="w-full h-12 text-lg font-semibold"
-            size="lg"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                Preparing Order...
-              </>
-            ) : (
-              `Order via WhatsApp - ₹${totalAmount}`
-            )}
-          </Button>
-          <p className="text-xs text-center text-muted-foreground mt-2">
-            You'll be redirected to WhatsApp to confirm your order
-          </p>
+          <div className="flex items-center justify-center">
+            {/* Single Continue/Submit Button */}
+            <Button
+              onClick={handleContinue}
+              disabled={
+                (currentStep === "details" && (!isFormValid || isLoading)) ||
+                isLoading
+              }
+              className="w-full max-w-md h-12 text-lg font-semibold flex items-center gap-2"
+              size="lg"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Preparing Order...
+                </>
+              ) : currentStep === "details" ? (
+                `Order via WhatsApp - ₹${totalAmount}`
+              ) : (
+                <>
+                  Continue to Details
+                  <ArrowRight className="h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </div>
+          
+          {currentStep === "details" && (
+            <p className="text-xs text-center text-muted-foreground mt-2">
+              You'll be redirected to WhatsApp to confirm your order
+            </p>
+          )}
         </div>
       </div>
     </main>
