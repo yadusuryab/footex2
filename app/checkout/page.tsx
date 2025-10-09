@@ -134,10 +134,10 @@ export default function CheckoutPage() {
       const extraAmount = productPrice > 999 ? productPrice - 999 : 0;
       
       let message = `*PAIR ${idx + 1}*\n`;
-      message += `• Product: ${item.productName.toUpperCase()}\n`;
-      message += `• Size: ${item.selectedSize}\n`;
-      message += `• Extra Amount: ₹${extraAmount}\n`;
-      message += `• Link: ${productLink}`;
+      message += `Product: ${item.productName.toUpperCase()}\n`;
+      message += `Size: ${item.selectedSize}\n`;
+      message += `Extra Amount: ₹${extraAmount}\n`;
+      message += `Link: ${productLink}`;
   
       if (item.buyOneGetOne && item.freeProduct) {
         const freeProductLink = `https://footex.in/p/${item.freeProduct._id}`;
@@ -145,10 +145,10 @@ export default function CheckoutPage() {
         const freeProductExtraAmount = freeProductPrice > 999 ? freeProductPrice - 999 : 0;
         
         message += `\n\n🎁 *PAIR ${idx + 2}*\n`;
-        message += `• Product: ${item.freeProduct.productName.toUpperCase()}\n`;
-        message += `• Size: ${item.freeProduct.selectedSize}\n`;
-        message += `• Extra Amount: ₹${freeProductExtraAmount}\n`;
-        message += `• Link: ${freeProductLink}`;
+        message += `Product: ${item.freeProduct.productName.toUpperCase()}\n`;
+        message += `Size: ${item.freeProduct.selectedSize}\n`;
+        message += `Extra Amount: ₹${freeProductExtraAmount}\n`;
+        message += `Link: ${freeProductLink}`;
       }
   
       return message;
@@ -156,7 +156,7 @@ export default function CheckoutPage() {
     .join("\n\n");
   
     const customerMsg = `
-    *2 PAIR SHOES ORDER*\n\n${productMessages}\n\n👤 *CUSTOMER DETAILS*\n• Name: ${customerDetails.name}\n• Address: ${customerDetails.address}\n• District: ${customerDetails.district}\n• State: ${customerDetails.state}\n• Pincode: ${customerDetails.pincode}\n• Landmark: ${customerDetails.landmark || "N/A"}\n• Contact No.1: ${customerDetails.contact1}\n• Contact No.2: ${customerDetails.contact2 || "N/A"}\n\n💰 *ORDER SUMMARY*\n• Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}\n• Shipping Charge: ₹${shippingCharge}\n• Grand Total: *₹${totalAmount}*
+    *2 PAIR SHOES ORDER*\n\n${productMessages}\n\n👤 *CUSTOMER DETAILS*\nName: ${customerDetails.name}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n💰 *ORDER SUMMARY*\nShipping Method: ${shippingMethod === "online" ? "Online" : "COD"}\nShipping Charge: ₹${shippingCharge}\nGrand Total: *₹${totalAmount}*
     `.trim();
 
     const encodedMsg = encodeURIComponent(customerMsg);
