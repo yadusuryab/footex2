@@ -198,7 +198,7 @@ export const OrderSummary = ({
           {/* Extra Amounts */}
           {totalExtraAmount > 0 && (
             <div className="flex items-center justify-between text-orange-600">
-              <span className="text-muted-foreground">Extra Amounts (Premium Products)</span>
+              <span className="text-muted-foreground">Extra Amounts (selected Products)</span>
               <span className="font-medium">+₹{totalExtraAmount}</span>
             </div>
           )}
@@ -291,10 +291,10 @@ export const OrderSummary = ({
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-sm text-orange-700 font-medium">
                 <Tag className="h-4 w-4" />
-                <span>Premium Product Charges</span>
+                <span>selected Product Charges</span>
               </div>
               <div className="text-xs text-orange-600">
-                <p>• Extra charges applied for premium products above ₹999</p>
+                <p>• Extra charges applied for selected products above ₹999</p>
                 <p>• Total extra amount: ₹{totalExtraAmount}</p>
               </div>
             </div>

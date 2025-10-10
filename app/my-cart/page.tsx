@@ -176,7 +176,7 @@ export default function CartPage() {
             </div>
 
             {/* Continue Shopping */}
-            <Card>
+            {/* <Card>
               <CardContent className="p-2">
                 <div className="flex items-center justify-around">
                   <div>
@@ -193,7 +193,7 @@ export default function CartPage() {
                   </Link>
                 </div>
               </CardContent>
-            </Card>
+            </Card> */}
           </div>
 
           {/* Order Summary Sidebar */}
@@ -255,7 +255,7 @@ export default function CartPage() {
                   
                   {totalExtraAmount > 0 && (
                     <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Premium Charges</span>
+                      <span className="text-muted-foreground">selected products</span>
                       <span className="text-amber-600">+₹{totalExtraAmount}</span>
                     </div>
                   )}
@@ -284,7 +284,7 @@ export default function CartPage() {
                       <p className="font-medium mb-1">Pricing Summary:</p>
                       <ul className="space-y-1">
                         <li>• All products start at ₹999 base price</li>
-                        <li>• Premium products have extra charges</li>
+                        <li>• selected products have extra charges</li>
                         <li>• Free products only charge extra fees</li>
                       </ul>
                     </div>
