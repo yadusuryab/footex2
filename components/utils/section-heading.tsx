@@ -38,7 +38,7 @@ const SHeading = ({
     },
     lg: {
       title: "text-3xl md:text-4xl",
-      description: "text-lg",
+      description: "text-md",
       container: "my-8"
     }
   };

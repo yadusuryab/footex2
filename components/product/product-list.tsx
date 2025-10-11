@@ -271,29 +271,30 @@ function ProductList({ price }: ProductListProps) {
         <SHeading
           title="Select Your First Pair"
           description="Choose the perfect first pair for your BOGO deal"
-          badge="BOGO Offer"
+          badge="Buy one get one."
+          size="lg"
           nolink={true}
         />
       </div>
 
       {/* Controls Bar */}
       <div className="md:mx-24">
-        <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center p-4 bg-card rounded-lg border">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center p-4 bg-card rounded-2xl shadow-sm">
           {/* Search */}
-          <div className="w-full sm:max-w-xs">
+          {/* <div className="w-full sm:max-w-xs">
             <Input
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full"
             />
-          </div>
+          </div> */}
 
           {/* Controls */}
           <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
             {/* Sort */}
-            <Select value={sortBy} onValueChange={setSortBy}>
-              <SelectTrigger className="w-[140px]">
+            <Select value={sortBy} onValueChange={setSortBy} >
+              <SelectTrigger className="w-[140px] border-none">
                 <SelectValue placeholder="Sort by" />
               </SelectTrigger>
               <SelectContent>
@@ -306,7 +307,7 @@ function ProductList({ price }: ProductListProps) {
             </Select>
 
             {/* View Toggle */}
-            <div className="flex border rounded-lg p-1">
+            <div className="flex  rounded-full p-1">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="icon"
