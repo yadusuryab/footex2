@@ -19,7 +19,8 @@ import {
   Search, CheckCircle, ShoppingCart, AlertCircle, ChevronRight, 
   Ruler, Gift, Lock, AlertTriangle, Plus, MousePointerClick, 
   RotateCcw, ArrowDown, 
-  X
+  X,
+  ArrowRightCircle
 } from "lucide-react";
 
 import Image from "next/image";
@@ -364,8 +365,9 @@ export const useAddToCart = () => {
               >
                 {selectedFreeProductSize ? (
                   <div className="flex items-center gap-2">
-                    <ShoppingCart className="h-4 w-4" />
-                    Add to Cart
+                  
+                    Continue
+                    <ArrowRightCircle className="h-4 w-4" />
                   </div>
                 ) : (
                   "Select Size First"

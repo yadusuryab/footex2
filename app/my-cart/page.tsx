@@ -122,6 +122,7 @@ export default function CartPage() {
         title="Your Shopping Cart" 
         description="Review your selected items and proceed to checkout"
         nolink
+        size="sm"
       />
 
       {cartItems.length === 0 ? (

@@ -278,7 +278,7 @@ function ProductList({ price }: ProductListProps) {
       </div>
 
       {/* Controls Bar */}
-      <div className="md:mx-24">
+      {/* <div className="md:mx-24">
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center p-4 bg-card rounded-2xl shadow-sm">
           {/* Search */}
           {/* <div className="w-full sm:max-w-xs">
@@ -291,8 +291,8 @@ function ProductList({ price }: ProductListProps) {
           </div> */}
 
           {/* Controls */}
-          <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-            {/* Sort */}
+          {/* <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+            
             <Select value={sortBy} onValueChange={setSortBy} >
               <SelectTrigger className="w-[140px] border-none">
                 <SelectValue placeholder="Sort by" />
@@ -306,7 +306,7 @@ function ProductList({ price }: ProductListProps) {
               </SelectContent>
             </Select>
 
-            {/* View Toggle */}
+   
             <div className="flex  rounded-full p-1">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
@@ -325,9 +325,9 @@ function ProductList({ price }: ProductListProps) {
                 <List className="h-4 w-4" />
               </Button>
             </div>
-          </div>
+          </div> 
         </div>
-      </div>
+      </div> */}
 
       {/* Results Info */}
       <div className="md:mx-24">
