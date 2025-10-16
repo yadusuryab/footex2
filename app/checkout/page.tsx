@@ -212,7 +212,7 @@ export default function CheckoutPage() {
     switch (currentStep) {
       case "payment":
         return (
-          <Card>
+          <Card className="rounded-3xl">
             <CardHeader>
               <CardTitle className="flex items-center text-lg gap-2">
                 <CheckCircle2 className="h-5 w-5" />
@@ -263,9 +263,9 @@ export default function CheckoutPage() {
                           </Badge>
                         </div>
                       </div>
-                      <p className="text-sm text-muted-foreground">
+                      {/* <p className="text-sm text-muted-foreground">
                         {method.description}
-                      </p>
+                      </p> */}
                       
                       {method.id === "online" && (
                         <div className="flex items-center gap-1 mt-2">
@@ -284,7 +284,7 @@ export default function CheckoutPage() {
                 ))}
               </RadioGroup>
               
-              {shippingMethod === "online" && (
+              {/* {shippingMethod === "online" && (
                 <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
                   <div className="flex items-center gap-2 text-sm text-green-800">
                     <CheckCircle className="h-4 w-4 text-green-600" />
@@ -292,7 +292,7 @@ export default function CheckoutPage() {
                     <span>You saved ₹200 with faster delivery</span>
                   </div>
                 </div>
-              )}
+              )} */}
             </CardContent>
           </Card>
         );
@@ -365,7 +365,7 @@ export default function CheckoutPage() {
 
   return (
     <main className="container mx-auto md:px-16 px-2 min-h-screen pb-24">
-      <div className="py-6">
+      <div className="">
     {/* <h1 className="text-center font-semibold text-lg">Checkout</h1> */}
 
         {getStepProgress()}
