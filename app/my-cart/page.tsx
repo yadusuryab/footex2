@@ -118,12 +118,12 @@ export default function CartPage() {
 
   return (
     <main className="container mx-auto md:px-16 px-2 min-h-screen pb-8">
-      <SHeading 
+      {/* <SHeading 
         title="Your Shopping Cart" 
         description="Review your selected items and proceed to checkout"
         nolink
         size="sm"
-      />
+      /> */}
 
       {cartItems.length === 0 ? (
         <Card className="max-w-2xl mx-auto text-center">
@@ -144,25 +144,25 @@ export default function CartPage() {
           </CardContent>
         </Card>
       ) : (
-        <div className="grid lg:grid-cols-3 gap-8 mt-8">
+        <div className="grid lg:grid-cols-3 gap-8 px-4">
           {/* Cart Items Section */}
           <div className="lg:col-span-2 space-y-6">
             {/* Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-2xl font-bold">Your Items</h2>
-                <p className="text-muted-foreground">
+                <h2 className="text-lg font-bold">Your Items</h2>
+                <p className="text-muted-foreground text-sm">
                   {calculateTotalItems()} item{calculateTotalItems() !== 1 ? 's' : ''} in your cart
-                  {calculateFreeItems() > 0 && (
+                  {/* {calculateFreeItems() > 0 && (
                     <span className="text-green-600 ml-2">
                       ({calculateFreeItems()} free)
                     </span>
-                  )}
+                  )} */}
                 </p>
               </div>
-              <Badge variant="secondary" className="text-sm">
+              {/* <Badge variant="secondary" className="text-sm">
                 {cartItems.length} Paid Product{cartItems.length !== 1 ? 's' : ''}
-              </Badge>
+              </Badge> */}
             </div>
 
             {/* Cart Items List */}

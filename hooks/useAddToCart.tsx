@@ -65,7 +65,7 @@ export const useAddToCart = () => {
     } else {
       addToCart(selectedProduct!, selectedSize);
       setIsSizeModalOpen(false);
-      router.push("/my-cart");
+      router.push("/checkout");
     }
   };
 
@@ -94,7 +94,7 @@ export const useAddToCart = () => {
       selectedFreeProductSize
     );
     setIsSizeModalOpen(false);
-    router.push("/my-cart");
+    router.push("/checkout");
   };
 
   // Add to cart function

@@ -153,7 +153,7 @@ export default function CheckoutPage() {
     .join("\n\n");
   
     const customerMsg = `
-    *2 PAIR SHOES ORDER*\n\n${productMessages}\n\n👤 *CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n💰 *ORDER SUMMARY*\nShipping Method: ${shippingMethod === "online" ? "Online" : "COD"}\nShipping Charge: ₹${shippingCharge}\nGrand Total: *₹${totalAmount}*
+    *2 PAIR SHOES ORDER*\n\n${productMessages}\n\n *CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n *ORDER SUMMARY*\n*Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}*\n*Shipping Charge: ₹${shippingCharge}*\n*Grand Total: ₹${totalAmount}*
     `.trim();
 
     const encodedMsg = encodeURIComponent(customerMsg);

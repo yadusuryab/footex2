@@ -2,7 +2,6 @@
 
 import { Hero } from "@/components/sections/hero";
 import { ProductCardWithSale } from "@/components/sections/sale-is-live";
-import { Social } from "@/components/sections/social";
 import Link from "next/link";
 import { useRef, useState, useEffect } from "react";
 
@@ -332,7 +331,7 @@ export default function Home() {
         </section>
 
         {/* CTA Section */}
-        <section className="my-16 md:my-24 text-center">
+        {/* <section className="my-16 md:my-24 text-center">
           <div className="max-w-md mx-auto space-y-6">
             <h2 className="text-2xl md:text-3xl font-light text-gray-900">Ready to Walk Better?</h2>
             <p className="text-gray-600">
@@ -342,7 +341,7 @@ export default function Home() {
               View Offer
             </Link>
           </div>
-        </section>
+        </section> */}
       </div>
     </div>
   );

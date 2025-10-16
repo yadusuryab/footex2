@@ -58,7 +58,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         {/* <ThemeProvider attribute="class" defaultTheme="dark" disableTransitionOnChange> */}
           <Header />
-          <div className="py-20 min-h-screen">{children}</div>
+          <div className="py-5 min-h-screen">{children}</div>
           <Footer />
           <Toaster />
         {/* </ThemeProvider> */}

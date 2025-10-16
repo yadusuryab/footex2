@@ -2,10 +2,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { ShoppingBag } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Badge } from "@/components/ui/badge";
 
 interface CartButtonProps {
   showLabel?: boolean;
@@ -29,49 +26,40 @@ export default function CartButton({ showLabel = false }: CartButtonProps) {
     return total + (item.buyOneGetOne && item.freeProduct ? 2 : 1);
   }, 0);
 
+  // Simple SVG cart icon - faster than Lucide
+  const CartIcon = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
+      <line x1="3" y1="6" x2="21" y2="6" />
+      <path d="M16 10a4 4 0 0 1-8 0" />
+    </svg>
+  );
+
   if (showLabel) {
     return (
-      <Link href="/my-cart">
-      <Button
-        variant={'secondary'}
-        size="sm"
-        className="relative"
-      >
-      
-          
-            <ShoppingBag className="h-4 w-4" />
-            {totalItems > 0 && (
-              <Badge 
-                className="absolute -top-2 -right-2 h-4 min-w-4 flex items-center justify-center px-1 text-xs bg-green-500 text-primary-foreground border-0"
-                variant="default"
-              >
-                {totalItems}
-              </Badge>
-            )}
-          
-          <span className="text-xs font-medium">Cart</span>
-       
-      </Button> </Link>
+      <Link href="/checkout" className="relative inline-flex items-center gap-2 px-3 py-2 text-sm bg-secondary rounded-md hover:bg-secondary/80 transition-colors">
+        <CartIcon />
+        {totalItems > 0 && (
+          <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">
+            {totalItems}
+          </span>
+        )}
+        <span className="text-xs font-medium">Cart</span>
+      </Link>
     );
   }
 
   return (
-    <Button
-      variant="secondary"
-      size="icon"
-      asChild
+    <Link 
+      href="/checkout" 
+      className="relative inline-flex text-white items-center justify-center w-9 h-9 bg-secondary rounded-md hover:bg-secondary/80 transition-colors"
     >
-      <Link href="/my-cart">
-        <ShoppingBag className="h-4 w-4" />
-        {totalItems > 0 && (
-          <Badge 
-            className="absolute -top-1 -right-1 h-5 min-w-5 flex border-white/30 items-center text-white backdrop-blur-sm justify-center px-1 text-xs "
-            variant="outline"
-          >
-            {totalItems}
-          </Badge>
-        )}
-      </Link>
-    </Button>
+      <CartIcon />
+      {totalItems > 0 && (
+        <span className="absolute -top-1 -right-1 bg-green-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center border border-white/30 backdrop-blur-sm">
+          {totalItems}
+        </span>
+      )}
+    </Link>
   );
 }

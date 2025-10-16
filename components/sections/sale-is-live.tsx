@@ -66,7 +66,7 @@ function ProductCardWithSale() {
 
   return (
     <div className="w-full max-w-2xl mx-auto">
-      <div className={`rounded-2xl p-6 shadow-lg border-2 ${
+      <div className={`rounded-3xl p-6 ${
         isUrgent 
           ? 'bg-gradient-to-r from-red-500 to-orange-500 text-white animate-pulse' 
           : 'bg-gradient-to-r from-purple-600 to-pink-600 text-white'
@@ -101,9 +101,7 @@ function ProductCardWithSale() {
           ))}
         </div>
         
-        <div className="mt-4 text-center text-sm opacity-90">
-          ⚡ Offer expires at midnight. Don't miss out!
-        </div>
+        
       </div>
     </div>
   );

@@ -178,7 +178,7 @@ export default function CartItem({ item, onRemove }: CartItemProps) {
       </div>
 
       {/* Quick Actions */}
-      <div className="border-t bg-muted/50">
+      {/* <div className="border-t bg-muted/50">
         <CardContent className="p-3">
           <div className="flex items-center justify-between text-xs">
             <Link 
@@ -197,7 +197,7 @@ export default function CartItem({ item, onRemove }: CartItemProps) {
             )}
           </div>
         </CardContent>
-      </div>
+      </div> */}
     </Card>
   );
 }

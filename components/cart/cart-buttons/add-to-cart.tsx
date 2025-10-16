@@ -102,7 +102,7 @@ export default function AddToCartButton({
       selectedFreeProductSize
     );
     setIsSizeModalOpen(false);
-    router.push("/my-cart");
+    router.push("/checkout");
   };
 
   const addToCart = (
@@ -131,7 +131,7 @@ export default function AddToCartButton({
         <Button
           variant="secondary"
           className="w-full"
-          onClick={() => router.push("/my-cart")}
+          onClick={() => router.push("/checkout")}
         >
           {iconOnly ? (
             <CheckCircle />
