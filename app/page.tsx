@@ -104,16 +104,9 @@ export default function Home() {
 
   return (
     <div className="flex py-0 flex-col min-h-screen">
-      {/* Marquee Banner */}
+      
       <div className="relative overflow-hidden">
-        <div className="bg-black overflow-hidden whitespace-nowrap transform rotate-2 origin-left border-y border-yellow-400">
-          <div className="inline-block min-w-full animate-marquee text-white text-sm md:text-base px-4 py-2 font-medium">
-            🎉 BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • 🎉🎉 BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • 🎉🎉 BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • 🎉
-            🎉 BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • 🎉🎉 BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • 🎉🎉 BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • 🎉
-            🎉 BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • 🎉🎉 BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • 🎉🎉 BUY ONE GET ONE AT ₹999 • BUY ONE GET ONE AT ₹999 • 🎉
-         
-          </div>
-        </div>
+        
         <div className="px-4">
           <Hero filter="999" />
         </div>
@@ -123,16 +116,11 @@ export default function Home() {
         <ProductCardWithSale />
       </div>
 
-      {/* Bottom Marquee */}
-      <div className="bg-black overflow-hidden whitespace-nowrap transform -rotate-2 border-y border-yellow-400">
-        <div className="inline-block min-w-full animate-marquee text-white text-sm md:text-base px-4 py-2 font-medium">
-          ✨ LIMITED TIME OFFER • BUY ONE GET ONE AT ₹999 • ✨✨ LIMITED TIME OFFER • BUY ONE GET ONE AT ₹999 • ✨✨ LIMITED TIME OFFER • BUY ONE GET ONE AT ₹999 • ✨✨ LIMITED TIME OFFER • BUY ONE GET ONE AT ₹999 • ✨
-          ✨ LIMITED TIME OFFER • BUY ONE GET ONE AT ₹999 • ✨✨ LIMITED TIME OFFER • BUY ONE GET ONE AT ₹999 • ✨✨ LIMITED TIME OFFER • BUY ONE GET ONE AT ₹999 • ✨✨ LIMITED TIME OFFER • BUY ONE GET ONE AT ₹999 • ✨
-
-        </div>
+      {/* Bottom Marquee *
+      
       </div>
 
-      {/* Main Content */}
+       Main Content */}
       <div className="container mx-auto px-4 pt-2 flex-1">
         {/* Story Section */}
         <section className="my-16 md:my-24">
