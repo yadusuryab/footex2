@@ -191,7 +191,7 @@ export default function CheckoutPage() {
     return (
       <main className="container mx-auto md:px-16 px-2 md:max-w-[700px] min-h-screen flex items-center justify-center">
         <Card className="w-full max-w-md text-center">
-          <CardContent className="pt-6">
+          <CardContent className="">
             <div className="mx-auto w-24 h-24 bg-muted rounded-full flex items-center justify-center mb-4">
               <ShoppingBag className="h-12 w-12 text-muted-foreground" />
             </div>
@@ -214,13 +214,11 @@ export default function CheckoutPage() {
         return (
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+              <CardTitle className="flex items-center text-lg gap-2">
                 <CheckCircle2 className="h-5 w-5" />
                 Select Payment Method
               </CardTitle>
-              <CardDescription>
-                Choose how you want to pay for your order
-              </CardDescription>
+             
             </CardHeader>
             <CardContent>
               <RadioGroup
@@ -234,7 +232,7 @@ export default function CheckoutPage() {
                 {shippingMethods.map((method) => (
                   <div
                     key={method.id}
-                    className={`flex items-center space-x-3 rounded-lg border-2 p-4 cursor-pointer transition-all ${
+                    className={`flex items-center space-x-3 rounded-2xl border-2 p-4 cursor-pointer transition-all ${
                       shippingMethod === method.id
                         ? "border-primary bg-primary/5"
                         : "border-muted hover:border-primary/50"
@@ -270,14 +268,14 @@ export default function CheckoutPage() {
                       </p>
                       
                       {method.id === "online" && (
-                        <div className="flex items-center gap-2 mt-2">
+                        <div className="flex items-center gap-1 mt-2">
                           <div className="flex items-center gap-1 text-xs text-green-600 font-medium">
                             <Zap className="h-3 w-3" />
                             <span>Save ₹200</span>
                           </div>
                           <div className="flex items-center gap-1 text-xs text-blue-600">
                             <Truck className="h-3 w-3" />
-                            <span>Faster delivery (5-8 days)</span>
+                            <span>Fast delivery (5-8 days)</span>
                           </div>
                         </div>
                       )}
@@ -368,11 +366,7 @@ export default function CheckoutPage() {
   return (
     <main className="container mx-auto md:px-16 px-2 min-h-screen pb-24">
       <div className="py-6">
-        <SHeading
-          title="Checkout"
-          description="Complete your purchase in 2 simple steps"
-          nolink
-        />
+    {/* <h1 className="text-center font-semibold text-lg">Checkout</h1> */}
 
         {getStepProgress()}
 
@@ -398,7 +392,7 @@ export default function CheckoutPage() {
           <div className="space-y-6">
             <Card className="sticky top-6">
               <CardHeader>
-                <CardTitle>Order Summary</CardTitle>
+                <CardTitle className="text-lg">Order Summary</CardTitle>
                 <CardDescription>
                   {cartItems.length} item{cartItems.length > 1 ? "s" : ""} in your order
                 </CardDescription>

@@ -237,15 +237,15 @@ export const OrderSummary = ({
         
         {/* Prepaid Offer Banner */}
         {shippingMethod === "cod" && (
-          <Card className="p-3 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
+          <Card className=" bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
             <div className="flex items-center gap-3">
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
                 <Zap className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 text-sm font-semibold text-purple-800">
+                <div className="flex items-center gap-1 text-sm font-semibold text-purple-800">
                   <span>Choose prepaid to get ₹200 off!</span>
-                  <Badge className="bg-purple-600 text-white text-xs">SAVE ₹200</Badge>
+                  <Badge className="bg-purple-600 text-white w-fit text-xs"><span >SAVE&nbsp;</span> ₹200</Badge>
                 </div>
                 <div className="flex items-center gap-2 text-xs text-purple-600 mt-1">
                   <Truck className="h-3 w-3" />
