@@ -33,7 +33,7 @@ const Header = () => {
               </Suspense>
             </Link>
 
-            <Link href={site.instagram} className="flex items-center gap-2 ">
+            <Link href={`https://instagram.com/${site.instagram}`} target="_blank" className="flex items-center gap-2 ">
               <Button
                 variant={"secondary"}
                 size={"icon"}
