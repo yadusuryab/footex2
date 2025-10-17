@@ -13,14 +13,13 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, ShoppingBag, Truck, CheckCircle2, Info, CheckCircle, Zap, ArrowRight } from "lucide-react";
+import { Loader2, ShoppingBag, Truck, CheckCircle2, Zap, ArrowRight } from "lucide-react";
 
 import SHeading from "@/components/utils/section-heading";
 import {
   calculateSubtotal,
   calculateTotalAmount,
   CartItem,
-  validateForm,
 } from "@/lib/orderUtils";
 import { CustomerDetailsForm } from "@/components/checkout/checkout-form";
 import { OrderSummary } from "@/components/checkout/order-summary";
@@ -208,6 +207,10 @@ export default function CheckoutPage() {
     );
   }
 
+  // Get the main product and free product from cart
+  const mainProduct = cartItems[0];
+  const freeProduct = mainProduct?.freeProduct;
+
   const renderStepContent = () => {
     switch (currentStep) {
       case "payment":
@@ -218,9 +221,49 @@ export default function CheckoutPage() {
                 <CheckCircle2 className="h-5 w-5" />
                 Select Payment Method
               </CardTitle>
-             
             </CardHeader>
             <CardContent>
+              {/* Product Images Display */}
+              <div className="mb-6">
+                <Label className="text-sm font-medium mb-3 block">Your Selected Pairs</Label>
+                <div className="flex gap-4">
+                  {/* Main Product */}
+                  <div className="flex-1">
+                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-blue-500">
+                      <img
+                        src={mainProduct.images[0]?.asset.url}
+                        alt={mainProduct.productName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="mt-2 text-center">
+                      <p className="text-sm font-medium">{mainProduct.productName}</p>
+                      <p className="text-xs text-muted-foreground">Size: {mainProduct.selectedSize}</p>
+                      <Badge variant="default" className="mt-1">Main Pair</Badge>
+                    </div>
+                  </div>
+
+                  {/* Free Product */}
+                  {freeProduct && (
+                    <div className="flex-1">
+                      <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-green-500">
+                        <img
+                          src={freeProduct.images[0]?.asset.url}
+                          alt={freeProduct.productName}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="mt-2 text-center">
+                        <p className="text-sm font-medium">{freeProduct.productName}</p>
+                        <p className="text-xs text-muted-foreground">Size: {freeProduct.selectedSize}</p>
+                        <Badge variant="secondary" className="mt-1 bg-green-600 text-white">Free Pair</Badge>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Payment Methods */}
               <RadioGroup
                 value={shippingMethod}
                 onValueChange={(value: "online" | "cod") => {
@@ -263,9 +306,6 @@ export default function CheckoutPage() {
                           </Badge>
                         </div>
                       </div>
-                      {/* <p className="text-sm text-muted-foreground">
-                        {method.description}
-                      </p> */}
                       
                       {method.id === "online" && (
                         <div className="flex items-center gap-1 mt-2">
@@ -283,16 +323,6 @@ export default function CheckoutPage() {
                   </div>
                 ))}
               </RadioGroup>
-              
-              {/* {shippingMethod === "online" && (
-                <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg">
-                  <div className="flex items-center gap-2 text-sm text-green-800">
-                    <CheckCircle className="h-4 w-4 text-green-600" />
-                    <span className="font-semibold">Great choice!</span>
-                    <span>You saved ₹200 with faster delivery</span>
-                  </div>
-                </div>
-              )} */}
             </CardContent>
           </Card>
         );
@@ -366,8 +396,6 @@ export default function CheckoutPage() {
   return (
     <main className="container mx-auto md:px-16 px-2 min-h-screen pb-24">
       <div className="">
-    {/* <h1 className="text-center font-semibold text-lg">Checkout</h1> */}
-
         {getStepProgress()}
 
         {formErrors.length > 0 && (
