@@ -140,7 +140,7 @@ export default function CheckoutPage() {
         const freeProductPrice = item.freeProduct.price || 999;
         const freeProductExtraAmount = freeProductPrice > 999 ? freeProductPrice - 999 : 0;
         
-        message += `\n\n🎁 *PAIR ${idx + 2}*\n`;
+        message += `\n\n*PAIR ${idx + 2}*\n`;
         message += `Product: ${item.freeProduct.productName.toUpperCase()}\n`;
         message += `Size: ${item.freeProduct.selectedSize}\n`;
         message += `Extra Amount: ₹${freeProductExtraAmount}\n`;
@@ -152,7 +152,7 @@ export default function CheckoutPage() {
     .join("\n\n");
   
     const customerMsg = `
-    *2 PAIR SHOES ORDER*\n\n${productMessages}\n\n *CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n *ORDER SUMMARY*\n*Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}*\n*Shipping Charge: ₹${shippingCharge}*\n*Grand Total: ₹${totalAmount}*
+    *2 PAIR SHOES ORDER*\n\n${productMessages}\n\n *CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n *ORDER SUMMARY*\n*Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}*\n*Shipping Charge: ₹${shippingCharge}*\n*GRAND TOTAL: ₹${totalAmount}*
     `.trim();
 
     const encodedMsg = encodeURIComponent(customerMsg);
