@@ -239,7 +239,7 @@ export default function CheckoutPage() {
                     <div className="mt-2 text-center">
                       <p className="text-sm font-medium">{mainProduct.productName}</p>
                       <p className="text-xs text-muted-foreground">Size: {mainProduct.selectedSize}</p>
-                      <Badge variant="default" className="mt-1">Main Pair</Badge>
+                      <Badge variant="default" className="mt-1">1st Pair</Badge>
                     </div>
                   </div>
 
@@ -256,7 +256,7 @@ export default function CheckoutPage() {
                       <div className="mt-2 text-center">
                         <p className="text-sm font-medium">{freeProduct.productName}</p>
                         <p className="text-xs text-muted-foreground">Size: {freeProduct.selectedSize}</p>
-                        <Badge variant="secondary" className="mt-1 bg-green-600 text-white">Free Pair</Badge>
+                        <Badge variant="secondary" className="mt-1 bg-green-600 text-white">2nd Pair</Badge>
                       </div>
                     </div>
                   )}

@@ -78,7 +78,7 @@ export const OrderSummary = ({
                             {item.shoeBrand}
                           </p>
                         </div>
-                        <div className="text-right ml-2">
+                        {/* <div className="text-right ml-2">
                           <p className="font-semibold text-sm">
                             ₹{productPrice}
                           </p>
@@ -87,7 +87,7 @@ export const OrderSummary = ({
                               +₹{extraAmount} extra
                             </p>
                           )}
-                        </div>
+                        </div> */}
                       </div>
                       
                       <div className="flex items-center justify-between mt-2">
@@ -98,11 +98,11 @@ export const OrderSummary = ({
                         </div>
                         
                         {/* BOGO Badge */}
-                        {item.buyOneGetOne && (
+                        {/* {item.buyOneGetOne && (
                           <Badge variant="secondary" className="text-xs">
                             BOGO
                           </Badge>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>
@@ -122,15 +122,15 @@ export const OrderSummary = ({
                           />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center bg-green-100">
-                            <Gift className="h-6 w-6 text-green-600" />
+                            {/* <Gift className="h-6 w-6 text-green-600" /> */}
                           </div>
                         )}
                         {/* Free Badge */}
-                        <div className="absolute -top-1 -right-1">
+                        {/* <div className="absolute -top-1 -right-1">
                           <Badge className="bg-green-600 text-white text-xs px-1 py-0 h-4">
                             FREE
                           </Badge>
-                        </div>
+                        </div> */}
                       </div>
                       
                       {/* Free Product Details */}
@@ -138,16 +138,16 @@ export const OrderSummary = ({
                         <div className="flex items-start justify-between">
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
-                              <Gift className="h-3 w-3 text-green-600" />
+                              {/* <Gift className="h-3 w-3 text-green-600" /> */}
                               <h4 className="font-medium text-sm line-clamp-2 text-green-800">
                                 {item.freeProduct.productName}
                               </h4>
                             </div>
                             <p className="text-xs text-green-600 mt-1">
-                              {item.freeProduct.shoeBrand || 'Free Product'}
+                              {item.freeProduct.shoeBrand || '2nd Pair'}
                             </p>
                           </div>
-                          <div className="text-right ml-2">
+                          {/* <div className="text-right ml-2">
                             <p className="font-semibold text-sm text-green-600">
                               ₹0
                             </p>
@@ -156,7 +156,7 @@ export const OrderSummary = ({
                                 +₹{freeProductExtraAmount} extra
                               </p>
                             )}
-                          </div>
+                          </div> */}
                         </div>
                         
                         <div className="flex items-center justify-between mt-2">
@@ -165,10 +165,7 @@ export const OrderSummary = ({
                               <span>Size: {item.freeProduct.selectedSize}</span>
                             )}
                           </div>
-                          
-                          <Badge variant="outline" className="text-xs border-green-300 text-green-700">
-                            COMPLIMENTARY
-                          </Badge>
+                      
                         </div>
                       </div>
                     </div>
