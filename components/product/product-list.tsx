@@ -6,6 +6,7 @@ import SHeading from "../utils/section-heading";
 import ProductCard2 from "./product-image-card";
 import { Button } from "@/components/ui/button";
 import { Filter, Sparkles } from "lucide-react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 interface ProductListProps {
   price?: string | null;
@@ -19,12 +20,16 @@ const ProductCardSkeleton = ({ variant = "grid" }: { variant?: "grid" | "list" }
   `}></div>
 );
 
+// Filter types
+type FilterType = "all" | "with-extra" | "no-extra";
+
 function ProductList({ price }: ProductListProps) {
   const [vehicles, setVehicles] = useState<any[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [bogoProducts, setBogoProducts] = useState<any[]>([]);
   const [visibleItems, setVisibleItems] = useState<number>(12);
+  const [activeFilter, setActiveFilter] = useState<FilterType>("all");
 
   const { handleProductClick, renderBogoPage, renderSizeModal } = useAddToCart();
 
@@ -62,16 +67,57 @@ function ProductList({ price }: ProductListProps) {
     if (error) toast.error(error);
   }, [error]);
 
-  // Simplified filtering - remove heavy computations
-  const displayedVehicles = useMemo(() => {
+  // Filter products based on active filter
+  const filteredVehicles = useMemo(() => {
     if (!vehicles) return [];
-    return vehicles.slice(0, visibleItems);
-  }, [vehicles, visibleItems]);
+    
+    switch (activeFilter) {
+      case "with-extra":
+        return vehicles.filter((vehicle: any) => {
+          const amount = parseFloat(vehicle.price) || 0;
+          return amount > 999;
+        });
+      case "no-extra":
+        return vehicles.filter((vehicle: any) => {
+          const amount = parseFloat(vehicle.price) || 0;
+          return amount <= 999;
+        });
+      case "all":
+      default:
+        return vehicles;
+    }
+  }, [vehicles, activeFilter]);
+
+  // Simplified filtering for display
+  const displayedVehicles = useMemo(() => {
+    return filteredVehicles.slice(0, visibleItems);
+  }, [filteredVehicles, visibleItems]);
+
+  // Count products for each filter
+  const filterCounts = useMemo(() => {
+    if (!vehicles) return { all: 0, "with-extra": 0, "no-extra": 0 };
+    
+    const withExtra = vehicles.filter((vehicle: any) => {
+      const amount = parseFloat(vehicle.price) || 0;
+      return amount > 999;
+    }).length;
+    
+    const noExtra = vehicles.filter((vehicle: any) => {
+      const amount = parseFloat(vehicle.price) || 0;
+      return amount <= 999;
+    }).length;
+
+    return {
+      all: vehicles.length,
+      "with-extra": withExtra,
+      "no-extra": noExtra
+    };
+  }, [vehicles]);
 
   // Efficient infinite scroll
   useEffect(() => {
     const handleScroll = () => {
-      if (!vehicles || visibleItems >= vehicles.length) return;
+      if (!filteredVehicles || visibleItems >= filteredVehicles.length) return;
       
       const scrollTop = window.scrollY || document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight;
@@ -79,7 +125,7 @@ function ProductList({ price }: ProductListProps) {
 
       // Load more when near bottom
       if (scrollTop + clientHeight >= scrollHeight - 500) {
-        setVisibleItems(prev => Math.min(prev + 8, vehicles.length));
+        setVisibleItems(prev => Math.min(prev + 8, filteredVehicles.length));
       }
     };
 
@@ -97,32 +143,36 @@ function ProductList({ price }: ProductListProps) {
 
     window.addEventListener('scroll', throttledScroll, { passive: true });
     return () => window.removeEventListener('scroll', throttledScroll);
-  }, [vehicles, visibleItems]);
+  }, [filteredVehicles, visibleItems]);
+
+  // Reset visible items when filter changes
+  useEffect(() => {
+    setVisibleItems(12);
+  }, [activeFilter]);
 
   // Auto-load more if page is not filled
   useEffect(() => {
-    if (vehicles && !loading) {
+    if (filteredVehicles && !loading) {
       const checkHeight = () => {
         if (document.documentElement.scrollHeight <= window.innerHeight * 1.2) {
-          setVisibleItems(prev => Math.min(prev + 4, vehicles.length));
+          setVisibleItems(prev => Math.min(prev + 4, filteredVehicles.length));
         }
       };
       
       const timer = setTimeout(checkHeight, 50);
       return () => clearTimeout(timer);
     }
-  }, [vehicles, loading]);
+  }, [filteredVehicles, loading]);
 
   // Show immediate loading state
   if (loading && !vehicles) {
     return (
-      <div className="space-y-6">
+      <div className="">
         {/* Header */}
         <div className="md:mx-24">
           <SHeading
-            title="Select Your First Pair"
-            description="Choose the perfect first pair for your BOGO deal"
-            badge="Buy one get one."
+            title="Select 1st Pair"
+           
             size="lg"
             nolink={true}
           />
@@ -158,27 +208,42 @@ function ProductList({ price }: ProductListProps) {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="">
       {/* Header Section */}
       <div className="md:mx-24">
         <SHeading
-          title="Select Your First Pair"
-          description="Choose the perfect first pair for your BOGO deal"
-          badge="Buy one get one."
+          title="Select 1st pair"
           size="lg"
           nolink={true}
         />
       </div>
 
-      {/* Results Info */}
+      {/* Filter Tabs */}
       <div className="md:mx-24">
-        <div className="text-sm text-muted-foreground mb-4">
-          Showing {Math.min(visibleItems, vehicles.length)} of {vehicles.length} products
-        </div>
+        <Tabs 
+          value={activeFilter} 
+          onValueChange={(value) => setActiveFilter(value as FilterType)}
+          className="w-full"
+        >
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="all">
+              All Shoes ({filterCounts.all})
+            </TabsTrigger>
+            <TabsTrigger value="with-extra">
+              With Extra ({filterCounts["with-extra"]})
+            </TabsTrigger>
+            <TabsTrigger value="no-extra">
+              No extra ({filterCounts["no-extra"]})
+            </TabsTrigger>
+          </TabsList>
+        </Tabs>
       </div>
 
+      {/* Results Info */}
+      
+
       {/* Products Grid */}
-      <div className="md:mx-24">
+      <div className="md:mx-24 mt-4">
         <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4">
           {displayedVehicles.map((vehicle: any) => (
             <ProductCard2
@@ -192,7 +257,7 @@ function ProductList({ price }: ProductListProps) {
         </div>
 
         {/* Loading more skeletons */}
-        {visibleItems < vehicles.length && (
+        {visibleItems < filteredVehicles.length && (
           <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-2 gap-4 mt-4">
             {Array.from({ length: 4 }).map((_, index) => (
               <ProductCardSkeleton key={`more-${index}`} />
@@ -201,14 +266,30 @@ function ProductList({ price }: ProductListProps) {
         )}
 
         {/* End of results */}
-        {visibleItems >= vehicles.length && vehicles.length > 0 && (
+        {visibleItems >= filteredVehicles.length && filteredVehicles.length > 0 && (
           <div className="text-center py-8 border-t mt-8">
             <p className="text-muted-foreground">
-              🎉 All {vehicles.length} products loaded!
+              🎉 All {filteredVehicles.length} products loaded!
             </p>
           </div>
         )}
       </div>
+
+      {/* No Results for Filter State */}
+      {filteredVehicles.length === 0 && vehicles.length > 0 && (
+        <div className="text-center py-16">
+          <div className="w-24 h-24 bg-muted rounded-full flex items-center justify-center mx-auto mb-4">
+            <Filter className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <h3 className="text-xl font-semibold mb-2">No Products Match Your Filter</h3>
+          <p className="text-muted-foreground mb-6">
+            Try selecting a different filter to see more products.
+          </p>
+          <Button onClick={() => setActiveFilter("all")}>
+            Show All Products
+          </Button>
+        </div>
+      )}
 
       {/* No Results State */}
       {vehicles.length === 0 && (

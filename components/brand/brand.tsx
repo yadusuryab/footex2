@@ -13,8 +13,8 @@ const Brand: React.FC<BrandProps> = ({ small = false, className = "" }) => {
     <div className={className}>
       <Image
         src={Logo}
-        width={small ? 64 : 160}
-        height={small ? 64 : 160}
+        width={small ? 64 : 90}
+        height={small ? 64 : 90}
         alt={site.name}
       
         className={`object-contain ${small ? "max-w-16" : "max-w-28"}`}

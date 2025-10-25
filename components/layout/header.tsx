@@ -6,21 +6,22 @@ const Brand = dynamic(() => import("../brand/brand"), {
   loading: () => <div className="w-8 h-8 bg-gray-300 rounded animate-pulse" />,
 });
 
-const CartButton = dynamic(() => import("../cart/cart-buttons/cart-count"), {
-  loading: () => <div className="w-8 h-8 bg-gray-300 rounded animate-pulse" />,
-});
-
 import dynamic from "next/dynamic";
 import { Instagram } from "lucide-react";
 import { site } from "@/lib/site-config";
 import { Button } from "../ui/button";
+import {
+  IconBrandInstagram,
+  IconBrandInstagramFilled,
+  IconBrandWhatsapp,
+} from "@tabler/icons-react";
 
 const Header = () => {
   return (
     <>
       {/* Main Header */}
-      <header className="fixed top-4  left-1/2 -translate-x-1/2 z-50 w-[92%] max-w-[500px]">
-        <div className="bg-primary   rounded-2xl px-6 py-3">
+      <header className="fixed top-4  left-1/2 -translate-x-1/2 z-50 w-[85%] max-w-[500px]">
+        <div className="bg-primary   rounded-full px-6 py-3">
           <div className="flex items-center justify-between">
             {/* Brand Logo */}
             <Link href="/" className="flex items-center gap-2">
@@ -33,28 +34,23 @@ const Header = () => {
               </Suspense>
             </Link>
 
-            <Link href={`https://instagram.com/${site.instagram}`} target="_blank" className="flex items-center gap-2 ">
-              <Button
-                variant={"secondary"}
-                size={"icon"}
-                className="bg-gradient-to-br from-purple-600 via-pink-600 to-orange-400 hover:from-purple-700 hover:via-pink-700 hover:to-orange-500 text-white  hover:shadow-xl transition-all duration-300 hover:scale-105"
+            <div className="flex items-center gap-4">
+              {" "}
+              <Link
+                href={`https://instagram.com/${site.instagram}`}
+                target="_blank"
+                className="flex items-center gap-2 "
               >
-                <Suspense
-                  fallback={
-                    <div className="w-8 h-8 bg-gray-300 rounded animate-pulse" />
-                  }
-                >
-                  <Instagram />
-                </Suspense>
-              </Button>
-            </Link>
-
-            {/* Cart Button */}
-            {/* <div className="relative">
-              <Suspense fallback={<div className="w-8 h-8 bg-gray-300 rounded animate-pulse" />}>
-                <CartButton />
-              </Suspense>
-            </div> */}
+                <IconBrandInstagram />
+              </Link>
+              <Link
+                href={`https://wa.me/${site.phone}`}
+                target="_blank"
+                className="flex items-center gap-2 "
+              >
+                <IconBrandWhatsapp />
+              </Link>
+            </div>
           </div>
         </div>
       </header>

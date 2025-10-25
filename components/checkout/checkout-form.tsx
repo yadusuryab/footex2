@@ -11,7 +11,7 @@ interface CustomerDetailsFormProps {
     address: string;
     district: string;
     state: string;
-    instagramId:string;
+    instagramId: string;
     pincode: string;
     landmark: string;
   };
@@ -25,116 +25,134 @@ export const CustomerDetailsForm = ({
   handleInputChange,
 }: CustomerDetailsFormProps) => (
   <div className="space-y-4">
+    {/* Name & Email */}
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
+      <div>
+        <Label htmlFor="name">Full Name</Label>
         <Input
           id="name"
           name="name"
-          placeholder="Name"
+          placeholder="Enter your full name"
           value={customerDetails.name}
           onChange={handleInputChange}
-          required
+          className="mt-1"
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+      <div>
+        <Label htmlFor="email">Email Address</Label>
         <Input
           id="email"
           name="email"
           type="email"
-          placeholder="Email address"
+          placeholder="your.email@example.com"
           value={customerDetails.email}
           onChange={handleInputChange}
-          required
+          className="mt-1"
         />
       </div>
     </div>
+
+    {/* Contact Numbers */}
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-      <div className="space-y-2">
-        <Label htmlFor="contact1">Contact Number 1</Label>
+      <div>
+        <Label htmlFor="contact1">Primary Phone</Label>
         <Input
           id="contact1"
           name="contact1"
-          placeholder="Primary phone number"
+          placeholder="10-digit mobile number"
           value={customerDetails.contact1}
           onChange={handleInputChange}
-          required
+          className="mt-1"
         />
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="contact2">Contact Number 2</Label>
+      <div>
+        <Label htmlFor="contact2">Secondary Phone (Optional)</Label>
         <Input
           id="contact2"
           name="contact2"
-          placeholder="Secondary phone number"
+          placeholder="Alternative number"
           value={customerDetails.contact2}
           onChange={handleInputChange}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="contact2">Instagram ID</Label>
-        <Input
-          id="instagramId"
-          name="instagramId"
-          placeholder="Instagram ID"
-          value={customerDetails.instagramId}
-          onChange={handleInputChange}
+          className="mt-1"
         />
       </div>
     </div>
-    <div className="space-y-2">
-      <Label htmlFor="address">Address</Label>
+
+    {/* Instagram */}
+    <div>
+      <Label htmlFor="instagramId">Instagram Username (Optional)</Label>
+      <Input
+        id="instagramId"
+        name="instagramId"
+        placeholder="@yourusername"
+        value={customerDetails.instagramId}
+        onChange={handleInputChange}
+        className="mt-1"
+      />
+    </div>
+
+    {/* Address */}
+    <div>
+      <Label htmlFor="address">Complete Address</Label>
       <Textarea
         id="address"
         name="address"
-        placeholder="Enter your address"
+        placeholder="House no, Building, Street, Area"
         value={customerDetails.address}
         onChange={handleInputChange}
-        required
+        className="mt-1 min-h-[80px]"
       />
     </div>
-    <div className="space-y-2">
+
+    {/* Landmark */}
+    <div>
       <Label htmlFor="landmark">Landmark (Optional)</Label>
       <Input
         id="landmark"
         name="landmark"
-        placeholder="Nearby landmark"
+        placeholder="Nearby famous place, shop, or building"
         value={customerDetails.landmark}
         onChange={handleInputChange}
+        className="mt-1"
       />
     </div>
-    <div className="space-y-2">
-      <Label htmlFor="district">District</Label>
-      <Input
-        id="district"
-        name="district"
-        placeholder="District"
-        value={customerDetails.district}
-        onChange={handleInputChange}
-        required
-      />
+
+    {/* District & State */}
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      <div>
+        <Label htmlFor="district">District</Label>
+        <Input
+          id="district"
+          name="district"
+          placeholder="Your district"
+          value={customerDetails.district}
+          onChange={handleInputChange}
+          className="mt-1"
+        />
+      </div>
+      <div>
+        <Label htmlFor="state">State</Label>
+        <Input
+          id="state"
+          name="state"
+          placeholder="Your state"
+          value={customerDetails.state}
+          onChange={handleInputChange}
+          className="mt-1"
+        />
+      </div>
     </div>
-    <div className="space-y-2">
-      <Label htmlFor="state">State</Label>
-      <Input
-        id="state"
-        name="state"
-        placeholder="State"
-        value={customerDetails.state}
-        onChange={handleInputChange}
-        required
-      />
-    </div>
-    <div className="space-y-2">
+
+    {/* Pincode */}
+    <div>
       <Label htmlFor="pincode">Pincode</Label>
       <Input
         id="pincode"
         name="pincode"
-        placeholder="Pincode"
+        placeholder="6-digit pincode"
         value={customerDetails.pincode}
         onChange={handleInputChange}
-        required
+        className="mt-1"
       />
     </div>
   </div>

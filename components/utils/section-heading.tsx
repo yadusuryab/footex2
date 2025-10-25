@@ -17,7 +17,7 @@ interface SHeadingProps {
 
 const SHeading = ({
   title = "Get Top Deals on the Newest Products",
-  description = "Visit our all our products",
+  description = "",
   linkHref = "/products",
   nolink = false,
   buttonText = "View All Products",
@@ -29,17 +29,17 @@ const SHeading = ({
     sm: {
       title: "text-xl md:text-2xl",
       description: "text-sm",
-      container: "my-3"
+      container: "mb-2"
     },
     md: {
       title: "text-2xl md:text-3xl",
       description: "text-base",
-      container: "my-6"
+      container: "mb-2"
     },
     lg: {
       title: "text-3xl md:text-4xl",
       description: "text-md",
-      container: "my-8"
+      container: "mb-2"
     }
   };
 
@@ -88,7 +88,7 @@ const SHeading = ({
 
       {/* Optional: Decorative line */}
       {centered && (
-        <div className="flex justify-center mt-6">
+        <div className="flex justify-center ">
           <div className="w-16 h-1 bg-gradient-to-r from-transparent via-primary to-transparent rounded-full" />
         </div>
       )}

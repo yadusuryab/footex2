@@ -233,54 +233,7 @@ export const OrderSummary = ({
         </div>
         
         {/* Prepaid Offer Banner */}
-        {shippingMethod === "cod" && (
-          <Card className=" bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
-            <div className="flex items-center gap-3">
-              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gradient-to-r from-purple-500 to-blue-500 flex items-center justify-center">
-                <Zap className="h-4 w-4 text-white" />
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-1 text-sm font-semibold text-purple-800">
-                  <span>Choose prepaid to get ₹200 off!</span>
-                  <Badge className="bg-purple-600 text-white w-fit text-xs"><span >SAVE&nbsp;</span> ₹200</Badge>
-                </div>
-                <div className="flex items-center gap-2 text-xs text-purple-600 mt-1">
-                  <Truck className="h-3 w-3" />
-                  <span>Faster than COD • 5-8 days delivery</span>
-                </div>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Faster Delivery Info for Online */}
-        {shippingMethod === "online" && (
-          <Card className="p-3 bg-green-50 border-green-200">
-            <div className="flex items-center gap-3">
-              <Truck className="h-5 w-5 text-green-600 flex-shrink-0" />
-              <div>
-                <p className="text-sm font-semibold text-green-800">Faster Delivery</p>
-                <p className="text-xs text-green-600">5-8 days • Quicker than COD</p>
-              </div>
-            </div>
-          </Card>
-        )}
-
-        {/* Savings Summary */}
-        {isBOGO && (
-          <Card className="p-3 bg-blue-50 border-blue-200">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2 text-sm text-blue-700 font-medium">
-                <Tag className="h-4 w-4" />
-                <span>You're saving with Buy One Get One!</span>
-              </div>
-              <div className="text-xs text-blue-600">
-                <p>• Got {totalItems - cartItems.length} free product(s)</p>
-                <p>• Total savings: ₹{calculateFreeProductsBaseValue(cartItems)}</p>
-              </div>
-            </div>
-          </Card>
-        )}
+       
 
         {/* Extra Amounts Summary */}
         {totalExtraAmount > 0 && (
