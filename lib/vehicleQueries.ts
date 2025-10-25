@@ -5,7 +5,7 @@ export const getAllShoes = async (price?: string | null): Promise<any[] | undefi
     priceFilter = `&& price == ${price}`;
   }
 
-  const query = `*[_type == "shoe" ${priceFilter}] | order(_createdAt asc) {
+  const query = `*[_type == "shoe" ${priceFilter}] | order(orderNumber asc) {
     _id,
     productName,
     shoeBrand,

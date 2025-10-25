@@ -50,16 +50,11 @@ function ProductCardWithSale() {
     return () => clearInterval(timer);
   }, []);
 
-  if (!isVisible || timeLeft.isExpired) return null;
-
-  const isUrgent = timeLeft.hours < 6;
 
   return (
     <div className="w-full max-w-2xl mx-auto px-4">
       <div className={`rounded-xl p-4 ${
-        isUrgent 
-          ? 'bg-red-500 text-white' 
-          : 'bg-purple-600 text-white'
+         'bg-purple-600 text-white'
       }`}>
         <div className="text-center mb-3">
           <div className="text-sm font-semibold">Deal Ends In</div>
@@ -82,11 +77,7 @@ function ProductCardWithSale() {
           ))}
         </div>
 
-        {isUrgent && (
-          <div className="text-center mt-2 text-sm font-medium">
-            ⚡ Hurry! Limited time offer
-          </div>
-        )}
+      
       </div>
     </div>
   );

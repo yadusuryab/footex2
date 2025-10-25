@@ -372,23 +372,56 @@ export default function CheckoutPage() {
 
         {/* Simple Order Summary */}
         <Card className="mt-6">
-          <CardContent className="pt-6">
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span>Subtotal ({cartItems.length} items)</span>
-                <span>₹{subtotal}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Shipping</span>
-                <span>₹{shippingCharge}</span>
-              </div>
-              <div className="border-t pt-3 flex justify-between font-semibold">
-                <span>Total Amount</span>
-                <span>₹{totalAmount}</span>
-              </div>
+  <CardContent className="pt-6">
+    <div className="space-y-3">
+      {/* Display individual product prices and extra amounts */}
+      {cartItems.map((item, index) => {
+        const itemPrice = item.price || 999;
+        const extraAmount = itemPrice > 999 ? itemPrice - 999 : 0;
+        
+        return (
+          <div key={item._id}>
+            <div className="flex justify-between text-sm">
+              <span>Pair {index + 1} - {item.productName}</span>
+              <span>₹{itemPrice}</span>
             </div>
-          </CardContent>
-        </Card>
+            {extraAmount > 0 && (
+              <div className="flex justify-between text-sm text-green-600 ml-4">
+                <span>Extra Amount (Pair {index + 1})</span>
+                <span>+ ₹{extraAmount}</span>
+              </div>
+            )}
+            
+            {/* Free product details */}
+            {item.freeProduct && (
+              <>
+                <div className="flex justify-between text-sm ">
+                  <span>Pair {index + 2} - {item.freeProduct.productName}</span>
+                  <span>₹0</span>
+                </div>
+                {(item.freeProduct.price || 999) > 999 && (
+                  <div className="flex justify-between text-sm text-green-600 ml-4">
+                    <span>Extra Amount (Pair {index + 2})</span>
+                    <span>+ ₹{(item.freeProduct.price || 999) - 999}</span>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        );
+      })}
+      
+      <div className="flex justify-between text-sm">
+        <span>Shipping</span>
+        <span>₹{shippingCharge}</span>
+      </div>
+      <div className="border-t pt-3 flex justify-between font-semibold">
+        <span>Total Amount</span>
+        <span>₹{totalAmount}</span>
+      </div>
+    </div>
+  </CardContent>
+</Card>
       </div>
 
       {/* Fixed Bottom Button */}

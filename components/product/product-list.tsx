@@ -219,7 +219,7 @@ function ProductList({ price }: ProductListProps) {
       </div>
 
       {/* Filter Tabs */}
-      <div className="md:mx-24">
+      {/* <div className="md:mx-24">
         <Tabs 
           value={activeFilter} 
           onValueChange={(value) => setActiveFilter(value as FilterType)}
@@ -237,7 +237,7 @@ function ProductList({ price }: ProductListProps) {
             </TabsTrigger>
           </TabsList>
         </Tabs>
-      </div>
+      </div> */}
 
       {/* Results Info */}
       
