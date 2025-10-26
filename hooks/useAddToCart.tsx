@@ -80,7 +80,7 @@ export const useAddToCart = () => {
     setIsSizeModalOpen(true);
   };
 
-  // Complete BOGO flow
+  // Complete BOGO flow - UPDATED
   const completeBogoFlow = () => {
     if (selectedFreeProduct && selectedFreeProductSize) {
       addToCart(
@@ -90,7 +90,8 @@ export const useAddToCart = () => {
         selectedFreeProductSize
       );
       setIsBogoModalOpen(false);
-      router.push("/checkout");
+      setIsSizeModalOpen(false); // Close any open modals
+      router.push("/checkout"); // Redirect to checkout
     }
   };
 
@@ -194,6 +195,9 @@ export const useAddToCart = () => {
                             <Badge variant="outline" className="text-xs">
                               Size {selectedFreeProductSize}
                             </Badge>
+                            <span className="text-xs text-green-600 font-medium">
+                              ✓ Ready for checkout
+                            </span>
                           </div>
                         ) : (
                           <button
@@ -278,6 +282,8 @@ export const useAddToCart = () => {
                   if (isSelectingFreeProduct) {
                     // Free product size selected - just close modal
                     setIsSizeModalOpen(false);
+                    // After selecting free product size, automatically proceed to checkout
+                    completeBogoFlow(); // This will add to cart and redirect
                   } else {
                     // Main product size selected
                     if (selectedProduct?.buyOneGetOne) {
@@ -294,7 +300,8 @@ export const useAddToCart = () => {
               className="w-full"
               disabled={!currentSize}
             >
-              Confirm Size <IconSquareRoundedCheckFilled />
+              {isSelectingFreeProduct ? "Confirm & Checkout" : "Confirm Size"} 
+              <IconSquareRoundedCheckFilled />
             </Button>
           </DialogClose>
         </DialogContent>

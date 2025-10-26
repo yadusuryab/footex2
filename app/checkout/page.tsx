@@ -59,8 +59,14 @@ export default function CheckoutPage() {
   }, []);
 
   // Calculate totals
-
-  const subtotal = cartItems.reduce((sum, item:any) => sum + (item.price || 999) + (item.freeProduct?.price - 999), 0);
+  const mainProduct = cartItems[0];
+  const freeProduct = mainProduct?.freeProduct;
+  
+  const basePrice = 999;
+  const pair1Extra = mainProduct ? Math.max(0, (mainProduct.price || 999) - 999) : 0;
+  const pair2Extra = freeProduct ? Math.max(0, (freeProduct.price || 999) - 999) : 0;
+  
+  const subtotal = basePrice + pair1Extra + pair2Extra;
   const totalAmount = subtotal + shippingCharge;
 
   const handleInputChange = (
@@ -79,29 +85,25 @@ export default function CheckoutPage() {
     const phone = site.phone;
     const mainProduct = cartItems[0];
     const freeProduct = mainProduct?.freeProduct;
-  
+
     const productMessages = cartItems
       .map((item, idx) => {
         const productLink = `https://footex.in/p/${item._id}`;
-        const productPrice = item.price || 999;
         const extra = item.price - 999;
         
         let message = `*PAIR ${idx + 1}*\n`;
         message += `Product: ${item.productName.toUpperCase()}\n`;
         message += `Size: ${item.selectedSize}\n`;
-        message += `Price: ₹${productPrice - extra}\n`;
         message += `Extra: ₹${extra}\n`;
         message += `Link: ${productLink}`;
   
         if (item.buyOneGetOne && item.freeProduct) {
           const freeProductLink = `https://footex.in/p/${item.freeProduct._id}`;
-          const freeProductPrice = item.freeProduct.price || 999;
-          const freeProductExtraAmount = freeProductPrice > 999 ? freeProductPrice - 999 : 0;
+          const freeProductExtraAmount = item.freeProduct.price > 999 ? item.freeProduct.price - 999 : 0;
           
           message += `\n\n*PAIR ${idx + 2}*\n`;
           message += `Product: ${item.freeProduct.productName.toUpperCase()}\n`;
           message += `Size: ${item.freeProduct.selectedSize}\n`;
-          message += `Price: ₹0 \n`;
           message += `Extra: ₹${freeProductExtraAmount}\n`;
           message += `Link: ${freeProductLink}`;
         }
@@ -110,26 +112,8 @@ export default function CheckoutPage() {
       })
       .join("\n\n");
   
-    // Calculate according to your logic: first shoe full price + free shoe extra amount only
-    let calculatedTotal = 0;
-    
-    // First shoe - full price
-    if (cartItems.length > 0) {
-      calculatedTotal += cartItems[0].price || 999;
-    }
-    
-    // Free shoe - only extra amount
-    if (mainProduct?.freeProduct) {
-      const freeProductPrice = mainProduct.freeProduct.price || 999;
-      const freeProductExtraAmount = freeProductPrice > 999 ? freeProductPrice - 999 : 0;
-      calculatedTotal += freeProductExtraAmount;
-    }
-    
-    // Add shipping
-    calculatedTotal += shippingCharge;
-  
     const customerMsg = `
-  *2 PAIR${cartItems.length > 1 ? 'S' : ''} SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nFirst Pair: ₹${cartItems[0]?.price || 999}\nFree Pair Extra Amount: ₹${mainProduct?.freeProduct ? Math.max(0, (mainProduct.freeProduct.price || 999) - 999) : 0}\nShipping Charge: ₹${shippingCharge}\n*GRAND TOTAL: ₹${calculatedTotal}*
+*2 PAIR${cartItems.length > 1 ? 'S' : ''} SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nBase Price: ₹${basePrice}\nPair 1 Extra: ₹${pair1Extra}\nPair 2 Extra: ₹${pair2Extra}\nShipping Method: ${shippingMethod === "online" ? "Online Payment" : "Cash on Delivery"}\nShipping Charge: ₹${shippingCharge}\n*GRAND TOTAL: ₹${totalAmount}*
     `.trim();
   
     const encodedMsg = encodeURIComponent(customerMsg);
@@ -140,6 +124,7 @@ export default function CheckoutPage() {
       localStorage.removeItem("cart");
     }, 500);
   };
+
   const isFormValid =
     customerDetails.name &&
     customerDetails.contact1 &&
@@ -181,9 +166,6 @@ export default function CheckoutPage() {
       </main>
     );
   }
-
-  const mainProduct = cartItems[0];
-  const freeProduct = mainProduct?.freeProduct;
 
   const renderStepContent = () => {
     switch (currentStep) {
@@ -301,6 +283,18 @@ export default function CheckoutPage() {
                   </div>
                 </div>
               </RadioGroup>
+
+              {/* Continue Button after showing pairs */}
+              <div className="mt-6">
+                <Button
+                  onClick={handleContinue}
+                  className="w-full h-12 text-lg font-semibold flex items-center gap-2"
+                  size="lg"
+                >
+                  Continue to Details
+                  <ArrowRight className="h-4 w-4" />
+                </Button>
+              </div>
             </CardContent>
           </Card>
         );
@@ -392,92 +386,70 @@ export default function CheckoutPage() {
 
         {/* Simple Order Summary */}
         <Card className="mt-6">
-  <CardContent className="pt-6">
-    <div className="space-y-3">
-      {/* Display individual product prices and extra amounts */}
-      {cartItems.map((item, index) => {
-        const itemPrice = item.price || 999;
-        const extraAmount = itemPrice > 999 ? itemPrice - 999 : 0;
-        
-        return (
-          <div key={item._id}>
-            <div className="flex justify-between text-sm">
-              <span>Pair {index + 1} - {item.productName}</span>
-              <span>₹{itemPrice - extraAmount}</span>
-            </div>
-            {extraAmount > 0 && (
-              <div className="flex justify-between text-sm text-green-600 ml-4">
-                <span>Extra Amount (Pair {index + 1})</span>
-                <span>+ ₹{extraAmount}</span>
+          <CardContent className="pt-6">
+            <div className="space-y-3">
+              <div className="flex justify-between text-sm">
+                <span>Base Price</span>
+                <span>₹{basePrice}</span>
               </div>
-            )}
-            
-            {/* Free product details */}
-            {item.freeProduct && (
-              <>
-                <div className="flex justify-between text-sm ">
-                  <span>Pair {index + 2} - {item.freeProduct.productName}</span>
-                  <span>₹0</span>
+              
+              {pair1Extra > 0 && (
+                <div className="flex justify-between text-sm text-green-600 ml-4">
+                  <span>Extra Amount (Pair 1)</span>
+                  <span>+ ₹{pair1Extra}</span>
                 </div>
-                {(item.freeProduct.price || 999) > 999 && (
-                  <div className="flex justify-between text-sm text-green-600 ml-4">
-                    <span>Extra Amount (Pair {index + 2})</span>
-                    <span>+ ₹{(item.freeProduct.price || 999) - 999}</span>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        );
-      })}
-      
-      <div className="flex justify-between text-sm">
-        <span>Shipping</span>
-        <span>₹{shippingCharge}</span>
-      </div>
-      <div className="border-t pt-3 flex justify-between font-semibold">
-        <span>Total Amount</span>
-        <span>₹{totalAmount}</span>
-      </div>
-    </div>
-  </CardContent>
-</Card>
+              )}
+              
+              {pair2Extra > 0 && (
+                <div className="flex justify-between text-sm text-green-600 ml-4">
+                  <span>Extra Amount (Pair 2)</span>
+                  <span>+ ₹{pair2Extra}</span>
+                </div>
+              )}
+              
+              <div className="flex justify-between text-sm">
+                <span>Shipping ({shippingMethod === "online" ? "Online Payment" : "Cash on Delivery"})</span>
+                <span>₹{shippingCharge}</span>
+              </div>
+              
+              <div className="border-t pt-3 flex justify-between font-semibold">
+                <span>Total Amount</span>
+                <span>₹{totalAmount}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Terms & Conditions */}
+        
       </div>
 
-      {/* Fixed Bottom Button */}
-      <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t p-4">
-        <div className="container mx-auto px-4 max-w-2xl">
-          <Button
-            onClick={handleContinue}
-            disabled={
-              (currentStep === "details" && (!isFormValid || isLoading)) ||
-              isLoading
-            }
-            className="w-full h-12 text-lg font-semibold flex items-center gap-2"
-            size="lg"
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="h-5 w-5 animate-spin" />
-                Preparing Order...
-              </>
-            ) : currentStep === "details" ? (
-              `Order via WhatsApp - ₹${totalAmount}`
-            ) : (
-              <>
-                Continue to Details
-                <ArrowRight className="h-4 w-4" />
-              </>
-            )}
-          </Button>
-          
-          {currentStep === "details" && (
+      {/* Fixed Bottom Button - Only show for details step */}
+      {currentStep === "details" && (
+        <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur border-t p-4">
+          <div className="container mx-auto px-4 max-w-2xl">
+            <Button
+              onClick={handleContinue}
+              disabled={!isFormValid || isLoading}
+              className="w-full h-12 text-lg font-semibold flex items-center gap-2"
+              size="lg"
+            >
+              {isLoading ? (
+                <>
+                  <Loader2 className="h-5 w-5 animate-spin" />
+                  Preparing Order...
+                </>
+              ) : (
+                `Order via WhatsApp - ₹${totalAmount}`
+              )}
+            </Button>
+            
             <p className="text-xs text-center text-muted-foreground mt-2">
               You'll be redirected to WhatsApp to confirm your order
             </p>
-          )}
+          </div>
         </div>
-      </div>
+      )}
     </main>
   );
 }
