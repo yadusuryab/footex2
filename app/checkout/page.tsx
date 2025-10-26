@@ -74,23 +74,22 @@ export default function CheckoutPage() {
 
   const handleWhatsAppOrder = () => {
     setIsLoading(true);
-
+  
     const phone = site.phone;
     const mainProduct = cartItems[0];
     const freeProduct = mainProduct?.freeProduct;
-
+  
     const productMessages = cartItems
       .map((item, idx) => {
         const productLink = `https://footex.in/p/${item._id}`;
         const productPrice = item.price || 999;
-        const extraAmount = productPrice > 999 ? productPrice - 999 : 0;
         
         let message = `*PAIR ${idx + 1}*\n`;
         message += `Product: ${item.productName.toUpperCase()}\n`;
         message += `Size: ${item.selectedSize}\n`;
-        message += `Extra Amount: ₹${extraAmount}\n`;
+        message += `Price: ₹${productPrice}\n`;
         message += `Link: ${productLink}`;
-
+  
         if (item.buyOneGetOne && item.freeProduct) {
           const freeProductLink = `https://footex.in/p/${item.freeProduct._id}`;
           const freeProductPrice = item.freeProduct.price || 999;
@@ -99,27 +98,45 @@ export default function CheckoutPage() {
           message += `\n\n*PAIR ${idx + 2}*\n`;
           message += `Product: ${item.freeProduct.productName.toUpperCase()}\n`;
           message += `Size: ${item.freeProduct.selectedSize}\n`;
+          message += `Price: ₹0 \n`;
           message += `Extra Amount: ₹${freeProductExtraAmount}\n`;
           message += `Link: ${freeProductLink}`;
         }
-
+  
         return message;
       })
       .join("\n\n");
-
+  
+    // Calculate according to your logic: first shoe full price + free shoe extra amount only
+    let calculatedTotal = 0;
+    
+    // First shoe - full price
+    if (cartItems.length > 0) {
+      calculatedTotal += cartItems[0].price || 999;
+    }
+    
+    // Free shoe - only extra amount
+    if (mainProduct?.freeProduct) {
+      const freeProductPrice = mainProduct.freeProduct.price || 999;
+      const freeProductExtraAmount = freeProductPrice > 999 ? freeProductPrice - 999 : 0;
+      calculatedTotal += freeProductExtraAmount;
+    }
+    
+    // Add shipping
+    calculatedTotal += shippingCharge;
+  
     const customerMsg = `
-*2 PAIR SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\n*Shipping Method: ${shippingMethod === "online" ? "Online" : "COD"}*\n*Shipping Charge: ₹${shippingCharge}*\n*GRAND TOTAL: ₹${totalAmount}*
+  *${cartItems.length} PAIR${cartItems.length > 1 ? 'S' : ''} SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nFirst Pair: ₹${cartItems[0]?.price || 999}\nFree Pair Extra Amount: ₹${mainProduct?.freeProduct ? Math.max(0, (mainProduct.freeProduct.price || 999) - 999) : 0}\nShipping Charge: ₹${shippingCharge}\n*GRAND TOTAL: ₹${calculatedTotal}*
     `.trim();
-
+  
     const encodedMsg = encodeURIComponent(customerMsg);
-
+  
     setTimeout(() => {
       window.open(`https://wa.me/${phone}?text=${encodedMsg}`, "_blank");
       setIsLoading(false);
       localStorage.removeItem("cart");
     }, 500);
   };
-
   const isFormValid =
     customerDetails.name &&
     customerDetails.contact1 &&
