@@ -59,7 +59,8 @@ export default function CheckoutPage() {
   }, []);
 
   // Calculate totals
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.price || 999), 0);
+
+  const subtotal = cartItems.reduce((sum, item:any) => sum + (item.price || 999) + (item.freeProduct?.price - 999), 0);
   const totalAmount = subtotal + shippingCharge;
 
   const handleInputChange = (
@@ -83,11 +84,13 @@ export default function CheckoutPage() {
       .map((item, idx) => {
         const productLink = `https://footex.in/p/${item._id}`;
         const productPrice = item.price || 999;
+        const extra = item.price - 999;
         
         let message = `*PAIR ${idx + 1}*\n`;
         message += `Product: ${item.productName.toUpperCase()}\n`;
         message += `Size: ${item.selectedSize}\n`;
-        message += `Price: ₹${productPrice}\n`;
+        message += `Price: ₹${productPrice - extra}\n`;
+        message += `Extra: ₹${extra}\n`;
         message += `Link: ${productLink}`;
   
         if (item.buyOneGetOne && item.freeProduct) {
@@ -99,7 +102,7 @@ export default function CheckoutPage() {
           message += `Product: ${item.freeProduct.productName.toUpperCase()}\n`;
           message += `Size: ${item.freeProduct.selectedSize}\n`;
           message += `Price: ₹0 \n`;
-          message += `Extra Amount: ₹${freeProductExtraAmount}\n`;
+          message += `Extra: ₹${freeProductExtraAmount}\n`;
           message += `Link: ${freeProductLink}`;
         }
   
@@ -126,7 +129,7 @@ export default function CheckoutPage() {
     calculatedTotal += shippingCharge;
   
     const customerMsg = `
-  *${cartItems.length} PAIR${cartItems.length > 1 ? 'S' : ''} SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nFirst Pair: ₹${cartItems[0]?.price || 999}\nFree Pair Extra Amount: ₹${mainProduct?.freeProduct ? Math.max(0, (mainProduct.freeProduct.price || 999) - 999) : 0}\nShipping Charge: ₹${shippingCharge}\n*GRAND TOTAL: ₹${calculatedTotal}*
+  *2 PAIR${cartItems.length > 1 ? 'S' : ''} SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nFirst Pair: ₹${cartItems[0]?.price || 999}\nFree Pair Extra Amount: ₹${mainProduct?.freeProduct ? Math.max(0, (mainProduct.freeProduct.price || 999) - 999) : 0}\nShipping Charge: ₹${shippingCharge}\n*GRAND TOTAL: ₹${calculatedTotal}*
     `.trim();
   
     const encodedMsg = encodeURIComponent(customerMsg);
@@ -400,7 +403,7 @@ export default function CheckoutPage() {
           <div key={item._id}>
             <div className="flex justify-between text-sm">
               <span>Pair {index + 1} - {item.productName}</span>
-              <span>₹{itemPrice}</span>
+              <span>₹{itemPrice - extraAmount}</span>
             </div>
             {extraAmount > 0 && (
               <div className="flex justify-between text-sm text-green-600 ml-4">
