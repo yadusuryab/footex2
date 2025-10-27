@@ -5,7 +5,6 @@ import { Textarea } from "@/components/ui/textarea";
 interface CustomerDetailsFormProps {
   customerDetails: {
     name: string;
-    email: string;
     contact1: string;
     contact2: string;
     address: string;
@@ -38,18 +37,7 @@ export const CustomerDetailsForm = ({
           className="mt-1"
         />
       </div>
-      <div>
-        <Label htmlFor="email">Email Address</Label>
-        <Input
-          id="email"
-          name="email"
-          type="email"
-          placeholder="your.email@example.com"
-          value={customerDetails.email}
-          onChange={handleInputChange}
-          className="mt-1"
-        />
-      </div>
+    
     </div>
 
     {/* Contact Numbers */}

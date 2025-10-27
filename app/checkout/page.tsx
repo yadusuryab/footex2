@@ -40,7 +40,7 @@ export default function CheckoutPage() {
   const [currentStep, setCurrentStep] = useState<CheckoutStep>("payment");
   const [customerDetails, setCustomerDetails] = useState({
     name: "",
-    email: "",
+   
     contact1: "",
     contact2: "",
     address: "",
