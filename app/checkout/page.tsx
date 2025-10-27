@@ -430,7 +430,7 @@ export default function CheckoutPage() {
           <div className="container mx-auto px-4 max-w-2xl">
             <Button
               onClick={handleContinue}
-              disabled={!isFormValid || isLoading}
+              disabled={isLoading}
               className="w-full h-12 text-lg font-semibold flex items-center gap-2"
               size="lg"
             >
