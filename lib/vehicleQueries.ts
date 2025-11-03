@@ -20,6 +20,7 @@ export const getAllShoes = async (price?: string | null): Promise<any[] | undefi
     description,
     madeIn,
     price,
+    orderNumber,
     isOffer,
     offerPrice,
     buyOneGetOne,
