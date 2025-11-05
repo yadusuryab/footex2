@@ -5,6 +5,8 @@ import { site } from "@/lib/site-config";
 import { Toaster } from "@/components/ui/sonner";
 import Header from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import GoogleTagManager from "@/components/analyatics/GoogleTagManager";
+
 
 const inter = Poppins({
   subsets: ["latin"],
@@ -23,6 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+        <GoogleTagManager />
       <body className={`${inter.className} antialiased`}>
         <Header />
         <div className="py-5 min-h-screen">{children}</div>
