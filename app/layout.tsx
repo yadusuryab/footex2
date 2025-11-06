@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-        <GoogleTagManager />
+    
       <body className={`${inter.className} antialiased`}>
         <Header />
         <div className="py-5 min-h-screen">{children}</div>

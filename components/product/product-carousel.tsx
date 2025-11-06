@@ -1,105 +1,64 @@
 "use client";
-
-import { useState, useEffect } from "react";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  CarouselApi,
-} from "@/components/ui/carousel";
+import { useState } from "react";
 import Image from "next/image";
-import { urlFor } from "@/sanityClient";
 
-const ProductCarousel = ({
-  images,
-  productName,
-}: {
-  images: any[];
+interface ProductCarouselProps {
+  images: Array<{ url: string; thumbnail?: string }>;
   productName: string;
-}) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+}
 
-  useEffect(() => {
-    if (!carouselApi) return;
+export default function ProductCarousel({ images, productName }: ProductCarouselProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
 
-    const handleSelect = () => setActiveIndex(carouselApi.selectedScrollSnap());
-
-    carouselApi.on("select", handleSelect);
-
-    return () => {
-      carouselApi.off("select", handleSelect);
-    };
-  }, [carouselApi]);
-
-  // Function to change active image when clicking thumbnails
-  const handleThumbnailClick = (index: number) => {
-    if (!carouselApi) return;
-    carouselApi.scrollTo(index);
-    setActiveIndex(index);
-  };
+  if (!images?.length) {
+    return (
+      <div className="aspect-square bg-muted rounded-lg flex items-center justify-center">
+        <span className="text-muted-foreground">No Image</span>
+      </div>
+    );
+  }
 
   return (
-    <div className="w-full md:flex gap-2 flex-row-reverse md:items-center">
-      {/* Main Carousel */}
-      <Carousel className="w-full rounded-lg relative" setApi={setCarouselApi}>
-        <CarouselContent>
-          {images.length > 0 ? (
-            images.map((image, index) => (
-              <CarouselItem key={index}>
-                <Image
-                  src={urlFor(image.asset.url).url()}
-                  alt={productName}
-                  width={1200}
-                  height={800}
-                  className="h-[350px] md:h-[650px] w-full object-cover rounded-lg"
-                />
-              </CarouselItem>
-            ))
-          ) : (
-            <CarouselItem>
-              <Image
-                src="/default-product.jpg"
-                alt="Default Product"
-                width={1200}
-                height={800}
-                className="h-[350px] md:h-[650px] w-full object-cover rounded-lg"
-              />
-            </CarouselItem>
-          )}
-        </CarouselContent>
-        <CarouselPrevious className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-background bg-opacity-50 text-foreground rounded-full p-2 cursor-pointer">
-          &#8592;
-        </CarouselPrevious>
-        <CarouselNext className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-background bg-opacity-50 text-foreground rounded-full p-2 cursor-pointer">
-          &#8594;
-        </CarouselNext>
-      </Carousel>
-
-      {/* Thumbnails */}
-      <div className="flex md:grid justify-center gap-2 mt-4">
-        {images.map((image, index) => (
-          <button
-            key={index}
-            onClick={() => handleThumbnailClick(index)}
-            className={`w-16 h-16 border-2 rounded-md overflow-hidden ${
-              activeIndex === index ? "border-primary" : "border-transparent"
-            }`}
-          >
-            <Image
-              src={urlFor(image.asset.url).url()}
-              alt={`${productName} thumbnail`}
-              width={64}
-              height={64}
-              className="object-cover w-full h-full"
-            />
-          </button>
-        ))}
+    <div className="space-y-4">
+      {/* Main Image */}
+      <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden">
+        <Image
+          src={images[currentIndex]?.url || "/placeholder-image.jpg"}
+          alt={`${productName} - Image ${currentIndex + 1}`}
+          width={600}
+          height={600}
+          className="w-full h-full object-cover"
+          priority={currentIndex === 0} // Only priority load first image
+          loading={currentIndex === 0 ? "eager" : "lazy"}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
+          }}
+        />
       </div>
+
+      {/* Thumbnails - Limited to 4 */}
+      {images.length > 1 && (
+        <div className="flex gap-2 overflow-x-auto">
+          {images.slice(0, 4).map((image, index) => (
+            <button
+              key={index}
+              className={`flex-shrink-0 w-16 h-16 rounded border-2 overflow-hidden ${
+                currentIndex === index ? "border-primary" : "border-transparent"
+              }`}
+              onClick={() => setCurrentIndex(index)}
+            >
+              <Image
+                src={image.thumbnail || image.url}
+                alt={`Thumbnail ${index + 1}`}
+                width={64}
+                height={64}
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
-};
-
-export default ProductCarousel;
+}

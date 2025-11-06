@@ -1,73 +1,56 @@
 "use client";
-import * as React from "react";
-import Image from "next/image";
-import Link from "next/link";
-
-import { isProductInCart } from "@/lib/cart";
-import ImageCard from "../ui/image-card";
+import React from "react";
 
 export interface Product {
   _id: string;
   productName: string;
-  shoeBrand: string;
-  category: string;
-  sizes: number[];
-  colorVariants: string[];
-  images: { asset: { url: string } }[];
-  description: string;
-  madeIn: string;
   price: number;
-  isOffer: boolean;
+  isOffer?: boolean;
   offerPrice?: number;
-  buyOneGetOne: boolean;
+  buyOneGetOne?: boolean;
+  imageUrl?: string;
 }
 
-export interface ProductCardProps {
-  product: Product;
+interface ProductCardProps {
+  product: any;
   className?: string;
-  noLink?: boolean; // New option to disable linking
-  onClick?: () => void; // Optional click handler for `noLink`
+  variant?: "grid";
+  noLink?: boolean;
+  onClick?: () => void;
 }
 
 export default function ProductCard2({
   product,
   className = "",
   noLink = true,
-  ybg = true,
   onClick,
-}: any) {
-  const { _id, productName, shoeBrand,offerPrice, category, images,price } = product;
-  const [isInCart, setIsInCart] = React.useState(false);
-
-  // Check if the product is already in the cart on mount
-  React.useEffect(() => {
-    setIsInCart(isProductInCart(_id));
-
-    const handleCartUpdate = () => {
-      setIsInCart(isProductInCart(_id));
-    };
-
-    window.addEventListener("cartUpdated", handleCartUpdate);
-    return () => window.removeEventListener("cartUpdated", handleCartUpdate);
-  }, [_id]);
+}: ProductCardProps) {
+  const { productName, price, offerPrice, imageUrl } = product;
 
   const cardContent = (
-    <div
-      onClick={noLink ? onClick : undefined}
-      // Prevent navigation when `noLink` is true
+    <div 
+      onClick={onClick}
+      className={`rounded-2xl overflow-hidden ${className}`}
     >
-      {/* Product Image */}
-
-      <ImageCard
-        caption={`${productName}`}
-        price={price}
-        offerprice={offerPrice}
-        imageUrl={images[0]?.asset.url || "/placeholder-image.jpg"}
-        className={className}
-        ybg={ybg}
-      ></ImageCard>
+      {/* Optimized image with better quality */}
+      <div className="aspect-square relative">
+        <img
+          src={imageUrl || "/placeholder-image.jpg"}
+          alt={productName}
+          className="w-full h-full object-cover"
+          loading="lazy"
+          width={250}
+          height={250}
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
+          }}
+        />
+      </div>
+      
+      {/* Product info */}
+     
     </div>
   );
 
-  return noLink ? cardContent : <Link href={`/p/${_id}`}>{cardContent}</Link>;
+  return cardContent;
 }
