@@ -8,7 +8,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { site } from "@/lib/site-config";
-import { getAllShoes, searchShoes } from "@/lib/vehicleQueries";
+import { getAllShoes} from "@/lib/vehicleQueries";
 import Loading from "@/components/utils/loading";
 import SHeading from "@/components/utils/section-heading";
 import ProductCard from "@/components/product/product-card";
@@ -53,14 +53,7 @@ function ProductList() {
   // Function to search products
   const handleSearch = async (keyword: string) => {
     setSearchLoading(true);
-    try {
-      const searchResults: any = await searchShoes(keyword);
-      setFilteredShoes(searchResults);
-    } catch (err) {
-      console.error("Error searching products:", err);
-    } finally {
-      setSearchLoading(false);
-    }
+    
   };
 
   if (loading) return <Loading />;
