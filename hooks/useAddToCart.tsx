@@ -1,5 +1,5 @@
 "use client";
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
@@ -19,7 +19,6 @@ export interface Product {
   price?: number;
   offerPrice?: number;
 }
-
 export const useAddToCart = () => {
   const router = useRouter();
   const [isBogoModalOpen, setIsBogoModalOpen] = useState(false);
@@ -29,6 +28,12 @@ export const useAddToCart = () => {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [selectedFreeProductSize, setSelectedFreeProductSize] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
+  
+  // Add BOGO-specific pagination states
+  const [bogoOffset, setBogoOffset] = useState<number>(0);
+  const [bogoHasMore, setBogoHasMore] = useState<boolean>(true);
+  const [bogoLoading, setBogoLoading] = useState<boolean>(false);
+  const [allBogoProducts, setAllBogoProducts] = useState<Product[]>([]);
 
   // Memoized handlers
   const handleProductClick = useCallback((product: Product) => {
@@ -38,6 +43,38 @@ export const useAddToCart = () => {
     setSelectedFreeProductSize(null);
     setIsSizeModalOpen(true);
   }, []);
+
+  // Load more BOGO products
+  const loadMoreBogoProducts = useCallback(async () => {
+    if (bogoLoading || !bogoHasMore) return;
+    
+    try {
+      setBogoLoading(true);
+      const { getAllShoes } = await import("@/lib/vehicleQueries");
+      const data: any = await getAllShoes(null, 24, bogoOffset);
+      
+      if (data?.length) {
+        const newBogoProducts = data.filter((item: Product) => item.buyOneGetOne);
+        setAllBogoProducts(prev => [...prev, ...newBogoProducts]);
+        setBogoHasMore(data.length === 24);
+        setBogoOffset(prev => prev + data.length);
+      } else {
+        setBogoHasMore(false);
+      }
+    } catch (err) {
+      console.error("BOGO load error:", err);
+      toast.error("Failed to load more products");
+    } finally {
+      setBogoLoading(false);
+    }
+  }, [bogoOffset, bogoLoading, bogoHasMore]);
+
+  // Initialize BOGO products when modal opens
+  useEffect(() => {
+    if (isBogoModalOpen && allBogoProducts.length === 0) {
+      loadMoreBogoProducts();
+    }
+  }, [isBogoModalOpen, allBogoProducts.length, loadMoreBogoProducts]);
 
   const addToCart = useCallback((
     item: Product,
@@ -82,17 +119,27 @@ export const useAddToCart = () => {
     }
   }, [selectedProduct, selectedSize, selectedFreeProduct, selectedFreeProductSize, addToCart, router]);
 
+  // BOGO scroll handler
+  const handleBogoScroll = useCallback((e: React.UIEvent<HTMLDivElement>) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+    if (scrollHeight - scrollTop <= clientHeight + 100 && !bogoLoading && bogoHasMore) {
+      loadMoreBogoProducts();
+    }
+  }, [bogoLoading, bogoHasMore, loadMoreBogoProducts]);
+
   // Optimized BOGO modal
-  const renderBogoPage = useCallback((bogoProducts: Product[]) => {
+  const renderBogoPage = useCallback((initialBogoProducts: Product[]) => {
     if (!isBogoModalOpen || !selectedProduct) return null;
 
-    const filteredProducts = filteredBogoProducts(bogoProducts);
+    // Combine initial products with loaded BOGO products
+    const combinedBogoProducts = [...initialBogoProducts, ...allBogoProducts];
+    const filteredProducts = filteredBogoProducts(combinedBogoProducts);
 
     return (
       <div className="fixed inset-0 mt-2 bg-background h-full z-50 p-4 overflow-y-auto">
         <SHeading title="Select 2nd Pair" nolink />
 
-        {/* Selected Product Preview - Optimized */}
+        {/* Selected Product Preview */}
         {selectedProduct && (
           <div className="flex items-center gap-3 mb-4 p-3 bg-muted/30 rounded-lg">
             <div className="w-12 h-12 bg-white rounded border overflow-hidden flex-shrink-0">
@@ -113,9 +160,7 @@ export const useAddToCart = () => {
 
         {/* Status */}
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-muted-foreground">
-            {filteredProducts.length} pairs available
-          </span>
+          
           {selectedFreeProduct && !selectedFreeProductSize && (
             <div className="flex items-center gap-1 text-amber-600 text-sm">
               <Ruler className="h-4 w-4" />
@@ -124,15 +169,18 @@ export const useAddToCart = () => {
           )}
         </div>
 
-        {/* Product Grid - Limited to 30 for performance */}
-        <div className="grid md:grid-cols-3 grid-cols-2 gap-4 mb-20">
+        {/* Product Grid with scroll handling */}
+        <div 
+          className="grid md:grid-cols-3 grid-cols-2 gap-4 mb-20 max-h-[60vh] overflow-y-auto"
+          onScroll={handleBogoScroll}
+        >
           {filteredProducts.length === 0 ? (
             <div className="col-span-full text-center py-8">
               <Search className="h-8 w-8 text-muted-foreground mx-auto mb-2 opacity-50" />
               <p className="text-muted-foreground text-sm">No products found</p>
             </div>
           ) : (
-            filteredProducts.slice(0, 30).map((bogoProduct) => (
+            filteredProducts.map((bogoProduct) => (
               <div key={bogoProduct._id} className="w-full">
                 <div className={`relative rounded-lg border transition-colors ${
                   selectedFreeProduct?._id === bogoProduct._id ? "border-primary" : "border-border"
@@ -151,6 +199,14 @@ export const useAddToCart = () => {
                 </div>
               </div>
             ))
+          )}
+          
+          {/* Loading indicator */}
+          {bogoLoading && (
+            <div className="col-span-full text-center py-4">
+              <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+              <p className="text-sm text-muted-foreground mt-2">Loading more products...</p>
+            </div>
           )}
         </div>
 
@@ -209,9 +265,9 @@ export const useAddToCart = () => {
         </div>
       </div>
     );
-  }, [isBogoModalOpen, selectedProduct, selectedSize, selectedFreeProduct, selectedFreeProductSize, filteredBogoProducts, handleFreeProductSelect, completeBogoFlow]);
+  }, [isBogoModalOpen, selectedProduct, selectedSize, selectedFreeProduct, selectedFreeProductSize, filteredBogoProducts, handleFreeProductSelect, completeBogoFlow, allBogoProducts, bogoLoading, bogoHasMore, handleBogoScroll]);
 
-  // Optimized size modal
+
   const renderSizeModal = useCallback((bogoProducts: Product[]) => {
     const isSelectingFreeProduct = !!selectedFreeProduct;
     const currentProduct = isSelectingFreeProduct ? selectedFreeProduct : selectedProduct;
