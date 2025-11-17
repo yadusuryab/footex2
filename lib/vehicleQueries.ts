@@ -3,6 +3,7 @@ import { client } from "@/sanityClient";
 const cache = new Map();
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
+// For getAllShoes (listing pages)
 export const getAllShoes = async (price?: string | null, limit: number = 24, offset: number = 0): Promise<any[] | undefined> => {
   const cacheKey = `shoes-${price}-${limit}-${offset}`;
   
@@ -16,7 +17,7 @@ export const getAllShoes = async (price?: string | null, limit: number = 24, off
     priceFilter = `&& price == ${price}`;
   }
 
-  // Optimized query - balanced between quality and size
+  // INCREASED QUALITY - Better but still efficient
   const query = `*[_type == "shoe" ${priceFilter}] | order(orderNumber asc) [${offset}...${offset + limit}] {
     _id,
     productName,
@@ -25,7 +26,7 @@ export const getAllShoes = async (price?: string | null, limit: number = 24, off
     isOffer,
     offerPrice,
     buyOneGetOne,
-    "imageUrl": images[0].asset->url + "?w=250&h=250&auto=format&q=75" // Better quality but still optimized
+    "imageUrl": images[0].asset->url + "?w=400&h=400&auto=format&q=85&fit=crop" // Increased from 250px & q=75
   }`;
 
   try {
@@ -43,17 +44,16 @@ export const getAllShoes = async (price?: string | null, limit: number = 24, off
   }
 };
 
-// In vehicleQueries.ts - ULTRA OPTIMIZED
+// For getShoeById (detail pages) - HIGHER QUALITY
 export const getShoeById = async (id: string): Promise<any | undefined> => {
   const cacheKey = `shoe-${id}`;
   
-  // Check cache first
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
     return cached.data;
   }
 
-  // MINIMAL query - only essential fields + optimized images
+  // SIGNIFICANT QUALITY INCREASE
   const query = `*[_type == "shoe" && _id == $id][0] {
     _id,
     productName,
@@ -67,10 +67,10 @@ export const getShoeById = async (id: string): Promise<any | undefined> => {
     isOffer,
     offerPrice,
     buyOneGetOne,
-    // Optimized images - only first 3 with CDN parameters
-    "images": images[0...3] {
-      "url": asset->url + "?w=600&h=600&auto=format&q=80",
-      "thumbnail": asset->url + "?w=150&h=150&auto=format&q=70"
+    // HIGH QUALITY images - perfect for product details
+    "images": images[0...4] { // Show more images
+      "url": asset->url + "?w=800&h=800&auto=format&q=90&fit=fillmax", // High quality for zoom
+      "thumbnail": asset->url + "?w=200&h=200&auto=format&q=80&fit=crop" // Better thumbnails
     }
   }`;
 
@@ -88,13 +88,5 @@ export const getShoeById = async (id: string): Promise<any | undefined> => {
   } catch (error) {
     console.error("Error fetching shoe:", error);
     return undefined;
-  }
-};
-// Keep other functions the same
-export const addToCart = (shoe: any) => {
-  const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-  if (!cart.some((item: any) => item._id === shoe._id)) {
-    const updatedCart = [...cart, shoe];
-    localStorage.setItem("cart", JSON.stringify(updatedCart));
   }
 };
