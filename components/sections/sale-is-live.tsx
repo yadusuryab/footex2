@@ -54,7 +54,7 @@ function ProductCardWithSale() {
   return (
     <div className="w-full max-w-2xl mx-auto px-4">
       <div className={`rounded-xl p-4 ${
-         'bg-purple-600 text-white'
+         'bg-secondary text-secondary-foreground'
       }`}>
         <div className="text-center mb-3">
           <div className="text-sm font-semibold">Deal Ends In</div>

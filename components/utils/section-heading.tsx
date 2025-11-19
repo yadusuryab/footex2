@@ -61,7 +61,7 @@ const SHeading = ({
       )}
 
       {/* Title */}
-      <h2 className={`${currentSize.title} font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent mb-3`}>
+      <h2 className={`${currentSize.title} font-semibold tracking-tighter bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent mb-3`}>
         {title}
       </h2>
 

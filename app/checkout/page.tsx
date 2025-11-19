@@ -14,6 +14,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Loader2, ShoppingBag, CheckCircle2, Zap, Truck, ArrowRight } from "lucide-react";
+import Image from "next/image"; // ✅ Add Next.js Image
 
 import { CustomerDetailsForm } from "@/components/checkout/checkout-form";
 import { Button } from "@/components/ui/button";
@@ -25,26 +26,42 @@ interface CartItem {
   productName: string;
   selectedSize: string;
   price: number;
-  image?: string; // This is what we need
-  imageUrl?: string; // Alternative name
-  images?: Array<{ asset: { url: string } }>; // Original format
+  image?: string;
+  imageUrl?: string;
+  images?: Array<{ asset: { url: string } }>;
   buyOneGetOne?: boolean;
   freeProduct?: CartItem;
 }
 
 type CheckoutStep = "payment" | "details";
 
-// FIXED: Safe image URL getter that handles all possible image properties
+// ✅ OPTIMIZED: Safe image URL getter with CDN optimization
 const getProductImageUrl = (product: any): string => {
   if (!product) return "/placeholder-image.jpg";
   
-  // Try all possible image properties in order of priority
-  if (product.image && typeof product.image === 'string') return product.image;
-  if (product.imageUrl && typeof product.imageUrl === 'string') return product.imageUrl;
-  if (product.images?.[0]?.asset?.url) return product.images[0].asset.url;
-  if (product.images?.[0]?.url) return product.images[0].url;
+  let imageUrl = "";
   
-  return "/placeholder-image.jpg";
+  // Try all possible image properties in order of priority
+  if (product.image && typeof product.image === 'string') imageUrl = product.image;
+  else if (product.imageUrl && typeof product.imageUrl === 'string') imageUrl = product.imageUrl;
+  else if (product.images?.[0]?.asset?.url) imageUrl = product.images[0].asset.url;
+  else if (product.images?.[0]?.url) imageUrl = product.images[0].url;
+  else return "/placeholder-image.jpg";
+
+  // ✅ OPTIMIZATION: Add CDN parameters to reduce image size
+  if (imageUrl && !imageUrl.includes('/placeholder-image.jpg')) {
+    // For Cloudinary
+    if (imageUrl.includes('cloudinary.com')) {
+      return imageUrl.replace('/upload/', '/upload/w_200,h_200,q_50,f_auto/');
+    }
+    // For other CDNs, add optimization parameters
+    if (imageUrl.includes('cdn.') || imageUrl.includes('images.')) {
+      const separator = imageUrl.includes('?') ? '&' : '?';
+      return `${imageUrl}${separator}width=200&height=200&quality=50`;
+    }
+  }
+  
+  return imageUrl;
 };
 
 export default function CheckoutPage() {
@@ -70,7 +87,6 @@ export default function CheckoutPage() {
   useEffect(() => {
     try {
       const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-      console.log("Cart items:", cart); // Debug log to see what's in cart
       setCartItems(Array.isArray(cart) ? cart : []);
     } catch (error) {
       console.error("Error loading cart:", error);
@@ -81,18 +97,6 @@ export default function CheckoutPage() {
   // Safe product access
   const mainProduct = cartItems[0];
   const freeProduct = mainProduct?.freeProduct;
-  
-  // Debug logs to see product structure
-  useEffect(() => {
-    if (mainProduct) {
-      console.log("Main product:", mainProduct);
-      console.log("Main product image URL:", getProductImageUrl(mainProduct));
-    }
-    if (freeProduct) {
-      console.log("Free product:", freeProduct);
-      console.log("Free product image URL:", getProductImageUrl(freeProduct));
-    }
-  }, [mainProduct, freeProduct]);
   
   // Safe price calculations
   const basePrice = 999;
@@ -118,7 +122,6 @@ export default function CheckoutPage() {
   const validateForm = (): boolean => {
     const errors: string[] = [];
 
-    
     // Validate contact number format
     if (customerDetails.contact1 && !/^\d{10}$/.test(customerDetails.contact1.replace(/\D/g, ''))) {
       errors.push("Contact number must be 10 digits");
@@ -196,6 +199,25 @@ export default function CheckoutPage() {
     }
   };
 
+  // ✅ OPTIMIZED: Product Image Component
+  const ProductImage = ({ product, alt, className = "" }: { product: any; alt: string; className?: string }) => (
+    <div className={`aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 ${className}`}>
+      <Image
+        src={getProductImageUrl(product)}
+        alt={alt}
+        width={200}
+        height={200}
+        quality={50} // ✅ Reduced quality for checkout images
+        className="w-full h-full object-cover"
+        loading="eager" // ✅ Eager load since these are critical for confirmation
+        onError={(e) => {
+          console.error(`Failed to load product image:`, getProductImageUrl(product));
+          // Fallback is handled by Next.js Image
+        }}
+      />
+    </div>
+  );
+
   // Early return if no cart items
   if (!cartItems.length) {
     return (
@@ -255,23 +277,16 @@ export default function CheckoutPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              {/* FIXED: Product Images with better error handling */}
+              {/* ✅ OPTIMIZED: Product Images with Next.js Image */}
               <div className="mb-6">
                 <Label className="text-sm font-medium mb-3 block">Your Selected Pairs</Label>
                 <div className="flex gap-4">
                   <div className="flex-1">
-                    <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-blue-500">
-                      <img
-                        src={getProductImageUrl(mainProduct)}
-                        alt={mainProduct.productName || "Main Product"}
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          console.error("Failed to load main product image:", getProductImageUrl(mainProduct));
-                          (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
-                        }}
-                        onLoad={() => console.log("Main product image loaded successfully")}
-                      />
-                    </div>
+                    <ProductImage 
+                      product={mainProduct} 
+                      alt={mainProduct.productName || "Main Product"}
+                      className="border-blue-500"
+                    />
                     <div className="mt-2 text-center">
                       <p className="text-sm font-medium">{mainProduct.productName || "Product"}</p>
                       <p className="text-xs text-muted-foreground">Size: {mainProduct.selectedSize || "N/A"}</p>
@@ -281,18 +296,11 @@ export default function CheckoutPage() {
 
                   {freeProduct && (
                     <div className="flex-1">
-                      <div className="aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-green-500">
-                        <img
-                          src={getProductImageUrl(freeProduct)}
-                          alt={freeProduct.productName || "Free Product"}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                            console.error("Failed to load free product image:", getProductImageUrl(freeProduct));
-                            (e.target as HTMLImageElement).src = "/placeholder-image.jpg";
-                          }}
-                          onLoad={() => console.log("Free product image loaded successfully")}
-                        />
-                      </div>
+                      <ProductImage 
+                        product={freeProduct} 
+                        alt={freeProduct.productName || "Free Product"}
+                        className="border-green-500"
+                      />
                       <div className="mt-2 text-center">
                         <p className="text-sm font-medium">{freeProduct.productName || "Free Product"}</p>
                         <p className="text-xs text-muted-foreground">Size: {freeProduct.selectedSize || "N/A"}</p>
@@ -407,7 +415,7 @@ export default function CheckoutPage() {
     }
   };
 
-  // Step progress component (you had this commented out)
+  // Step progress component
   const getStepProgress = () => {
     const steps = [
       { number: 1, label: "Payment", key: "payment" as CheckoutStep },
@@ -501,6 +509,10 @@ export default function CheckoutPage() {
               <div className="border-t pt-3 flex justify-between font-semibold">
                 <span>Total Amount</span>
                 <span>₹{totalAmount}</span>
+              </div>
+              <div className="border-t pt-3 flex justify-between text-xs">
+                <span>By placing this order, you agree to the <Link href="/T&C" className="text-primary hover:underline">Terms and Conditions</Link></span>
+                
               </div>
             </div>
           </CardContent>

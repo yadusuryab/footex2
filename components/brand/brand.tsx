@@ -1,6 +1,4 @@
 import { site } from "@/lib/site-config";
-import Logo from "@/public/logo-web.svg";
-import Image from "next/image";
 import React from "react";
 
 interface BrandProps {
@@ -9,20 +7,20 @@ interface BrandProps {
 }
 
 const Brand: React.FC<BrandProps> = ({ small = false, className = "" }) => {
+  // ✅ OPTIMIZED: If SVG, use inline SVG or optimized file
   return (
     <div className={className}>
-      <Image
-        src={Logo}
-        width={small ? 64 : 90}
-        height={small ? 64 : 90}
+      {/* If SVG file is already optimized, keep using Image */}
+      <img
+        src="/logo-web.svg" // ✅ Direct path if SVG
+        width={small ? 64 : 110}
+        height={small ? 64 : 110}
         alt={site.name}
-      
-        className={`object-contain ${small ? "max-w-16" : "max-w-28"}`}
-        priority
+        className={`object-contain ${small ? "max-w-full" : "max-w-full"}`}
+        loading="eager"
       />
-      {/* <h2 className="font-bold italic">{site.name}</h2> */}
     </div>
   );
- };
+};
 
 export default Brand;

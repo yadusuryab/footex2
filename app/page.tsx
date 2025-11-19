@@ -17,7 +17,7 @@ export default function Home() {
         <ProductCardWithSale />
       </div>
 
-      <BrandStory />
+      {/* <BrandStory /> */}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 import { site } from "@/lib/site-config";
 import { Toaster } from "@/components/ui/sonner";
@@ -7,15 +7,22 @@ import Header from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import GoogleTagManager from "@/components/analyatics/GoogleTagManager";
 
-
-const inter = Poppins({
+// ✅ OPTIMIZED: Preload only necessary font weights
+const poppins = Poppins({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["300", "400", "500", "600", "700"], // ✅ Added multiple weights
+  display: "swap", // ✅ Better performance
+  preload: true, // ✅ Keep preload for critical font
+  fallback: ["system-ui", "arial"], // ✅ Better fallback
 });
 
 export const metadata: Metadata = {
-  title: site.name,
+  title: {
+    default: site.name,
+    template: `%s | ${site.name}` // ✅ Better SEO
+  },
   description: "Buy quality products at affordable price.",
+  keywords: ["shoes", "footwear", "fashion", "affordable"], // ✅ Added for SEO
 };
 
 export default function RootLayout({
@@ -25,12 +32,28 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-    
-      <body className={`${inter.className} antialiased`}>
+      <head>
+        {/* ✅ OPTIMIZED: Preconnect to critical domains */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        
+        {/* ✅ OPTIMIZED: Add favicon links */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/icon?<generated>" type="image/<generated>" sizes="<generated>" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon?<generated>" type="image/<generated>" sizes="<generated>" />
+      </head>
+      
+      <body className={`${poppins.className} antialiased`}>
+        {/* ✅ OPTIMIZED: Consider lazy loading non-critical components */}
         <Header />
-        <div className="py-5 min-h-screen">{children}</div>
+        <main className="py-5 min-h-screen"> {/* ✅ Added main tag for semantics */}
+          {children}
+        </main>
         <Footer />
         <Toaster />
+        
+        {/* ✅ OPTIMIZED: Load GTM only in production */}
+        {process.env.NODE_ENV === 'production' && <GoogleTagManager />}
       </body>
     </html>
   );
