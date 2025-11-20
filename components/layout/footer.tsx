@@ -19,7 +19,7 @@ function Footer() {
          
 
           {/* Links */}
-          <div className="flex justify-center items-center">
+          {/* <div className="flex justify-center items-center">
             <p className="text-sm text-muted-foreground">
              
               <Link 
@@ -35,7 +35,7 @@ function Footer() {
                 />
               </Link>
             </p>
-          </div>
+          </div> */}
            {/* Brand */}
            <div className="flex justify-center items-center">
             <Brand small/>
