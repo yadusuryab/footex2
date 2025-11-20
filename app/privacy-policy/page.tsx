@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import Link from 'next/link';
 
 export default function PrivacyPolicy() {
   return (
@@ -56,6 +57,11 @@ export default function PrivacyPolicy() {
 
         <h2 className="text-2xl font-semibold mt-6">8. Children's Privacy</h2>
         <p>Our services are not directed to individuals under the age of 13. We do not knowingly collect personal information from children.</p>
+        
+        <h2 className="text-xl font-semibold mt-6">Website made by Shopigo.</h2>
+
+        <p>Instagram : <Link href={'https://instagram.com/getshopigo'} className='text-secondary underline'>Shopigo Instagram</Link></p>
+        <p>Website : <Link href={'https://myshopigo.shop'} className='text-secondary underline mt-1'>Shopigo Website</Link></p>
       </div>
     </>
   );

@@ -37,7 +37,7 @@ function Footer() {
             </p>
           </div> */}
            {/* Brand */}
-           <div className="flex justify-center items-center">
+           <div className="flex justify-center col-span-2 items-center">
             <Brand small/>
           </div>
 
