@@ -4,8 +4,8 @@ const cache = new Map();
 const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
 
 // For getAllShoes (listing pages)
-export const getAllShoes = async (price?: string | null, limit: number = 24, offset: number = 0): Promise<any[] | undefined> => {
-  const cacheKey = `shoes-${price}-${limit}-${offset}`;
+export const getAllShoes = async (price?: string | null, limit: number = 24, offset: number = 0, includeDisabled: boolean = false): Promise<any[] | undefined> => {
+  const cacheKey = `shoes-${price}-${limit}-${offset}-${includeDisabled}`;
   
   const cached = cache.get(cacheKey);
   if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
@@ -17,8 +17,11 @@ export const getAllShoes = async (price?: string | null, limit: number = 24, off
     priceFilter = `&& price == ${price}`;
   }
 
+  // Add filter for disabled products
+  const disabledFilter = includeDisabled ? "" : `&& isDisabled != true`;
+
   // INCREASED QUALITY - Better but still efficient
-  const query = `*[_type == "shoe" ${priceFilter}] | order(orderNumber asc) [${offset}...${offset + limit}] {
+  const query = `*[_type == "shoe" ${priceFilter} ${disabledFilter}] | order(orderNumber asc) [${offset}...${offset + limit}] {
     _id,
     productName,
     sizes,
@@ -26,7 +29,10 @@ export const getAllShoes = async (price?: string | null, limit: number = 24, off
     isOffer,
     offerPrice,
     buyOneGetOne,
-    "imageUrl": images[0].asset->url + "?w=400&h=400&auto=format&q=85&fit=crop" // Increased from 250px & q=75
+    isDisabled,
+    disableReason,
+    stock,
+    "imageUrl": images[0].asset->url + "?w=400&h=400&auto=format&q=85&fit=crop"
   }`;
 
   try {
