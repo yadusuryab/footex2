@@ -58,6 +58,40 @@ const TermsAndConditions = () => {
             follow our guidelines.
           </p>
         </section>
+        <section className="terms-section">
+  <h3>AI-Generated Images & Product Representation</h3>
+
+  <p>
+    Some of our product visuals are created using AI for display purposes.
+    We make sincere efforts to deliver products that closely match the images shown.
+  </p>
+
+  <p>
+    Minor variations in color tone, texture, shine, or finishing may occur due to
+    lighting conditions, AI rendering, screen differences, or stock variations.
+    These are normal aspects of digital product representation.
+  </p>
+
+  <h3>Buy 1 Get 1 Offer – Quality & Pricing</h3>
+
+  <p>
+    Our Buy 1 Get 1 offer is structured to provide maximum value at this price range.
+    Product quality is aligned with the offer pricing.
+  </p>
+
+  <p>
+    Expectations of original brand products or high-end premium replicas are not applicable,
+    as those belong to a significantly higher price segment.
+  </p>
+
+  <h3>Returns & Replacements</h3>
+
+  <p>
+    Variations arising from visual representation, lighting effects, or digital creation
+    methods are not considered manufacturing defects and are not eligible for return
+    or replacement.
+  </p>
+</section>
 
         <section className="mb-4">
           <h3 className="text-sm font-semibold">IMPORTANT NOTES</h3>
