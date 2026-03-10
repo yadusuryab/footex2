@@ -122,10 +122,7 @@ export default function CheckoutPage() {
   const validateForm = (): boolean => {
     const errors: string[] = [];
 
-    // Validate contact number format
-    if (customerDetails.contact1 && !/^\d{10}$/.test(customerDetails.contact1.replace(/\D/g, ''))) {
-      errors.push("Contact number must be 10 digits");
-    }
+   
     
     setFormErrors(errors);
     return errors.length === 0;

@@ -48,7 +48,9 @@ export default function RootLayout({
         <Header />
         <main className="py-5 min-h-screen"> {/* ✅ Added main tag for semantics */}
           {children}
-        </main>
+          
+         
+</main>
         <Footer />
         <Toaster />
         
