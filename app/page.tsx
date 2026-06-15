@@ -13,9 +13,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="px-4 my-8">
+      {/*  <div className="px-4 my-8">
         <ProductCardWithSale />
-      </div>
+      </div>*/}
 
       {/* <BrandStory /> */}
     </div>
