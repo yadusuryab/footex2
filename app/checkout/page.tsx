@@ -331,10 +331,13 @@ export default function CheckoutPage() {
                   ? <span className="text-green-600 font-semibold">🎁 FREE SHIPPING</span>
                   : <span>₹{COD_CHARGE}</span>}
               </div>
-              <div className="flex justify-between text-sm items-center">
-                <span className="flex items-center gap-1"><Truck className="h-3.5 w-3.5" /> Expected Delivery</span>
-                <span className="font-medium">{activeDelivery.label}</span>
-              </div>
+             <div className="flex justify-between text-sm items-center whitespace-nowrap">
+  <span className="flex items-center gap-1">
+    <Truck className="h-3.5 w-3.5 flex-shrink-0" /> 
+    <span>Expected Delivery</span>
+  </span>
+  <span className="font-medium">{activeDelivery.label}</span>
+</div>
               <div className="border-t pt-3 flex justify-between font-bold text-base">
                 <span>Total Amount</span><span>₹{totalAmount}</span>
               </div>
