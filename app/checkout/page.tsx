@@ -331,13 +331,18 @@ export default function CheckoutPage() {
                   ? <span className="text-green-600 font-semibold">🎁 FREE SHIPPING</span>
                   : <span>₹{COD_CHARGE}</span>}
               </div>
-             <div className="flex justify-between text-sm items-center whitespace-nowrap">
-  <span className="flex items-center gap-1">
-    <Truck className="h-3.5 w-3.5 flex-shrink-0" /> 
-    <span>Expected Delivery</span>
-  </span>
-  <span className="font-medium">{activeDelivery.label}</span>
-</div>
+          <div className="rounded-2xl bg-muted/60 px-6 py-6 flex flex-col items-center text-center gap-2">
+                <Truck className="h-8 w-8 text-foreground/80" strokeWidth={1.5} />
+                <p className="text-base font-medium text-foreground">
+                  Expected Delivery by {formatDeliveryDate(activeDelivery.end)}
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Delivery Time : {shippingMethod === "online"
+                    ? `${ONLINE_DELIVERY_MIN_DAYS} - ${ONLINE_DELIVERY_MAX_DAYS}`
+                    : `${COD_DELIVERY_MIN_DAYS} - ${COD_DELIVERY_MAX_DAYS}`} Working Days
+                </p>
+              </div>
+ 
               <div className="border-t pt-3 flex justify-between font-bold text-base">
                 <span>Total Amount</span><span>₹{totalAmount}</span>
               </div>
