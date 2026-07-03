@@ -1,6 +1,6 @@
 "use client";
 
-import Poster2 from "@/public/poster-2.avif";
+import Poster2 from "@/public/poster-3.jpeg";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Image from "next/image";

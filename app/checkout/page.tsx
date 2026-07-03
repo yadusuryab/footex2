@@ -116,7 +116,7 @@ export default function CheckoutPage() {
         return msg;
       }).join("\n\n");
 
-      const msg = `*2 PAIR SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nBase Price: ₹${BASE_PRICE}\nPair 1 Extra: ₹${pair1Extra}\nPair 2 Extra: ₹${pair2Extra}\nShipping: ${shippingMethod === "online" ? "FREE (Online Payment)" : `₹${COD_CHARGE} (Cash on Delivery)`}\nExpected Delivery: ${activeDelivery.label}\n*GRAND TOTAL: ₹${totalAmount}*`.trim();
+      const msg = `*2 PAIR SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nBase Price: ₹${BASE_PRICE}\nShipping: ${shippingMethod === "online" ? "FREE (Online Payment)" : `₹${COD_CHARGE} (Cash on Delivery)`}\nExpected Delivery: ${activeDelivery.label}\n*GRAND TOTAL: ₹${totalAmount}*`.trim();
 
       setTimeout(() => {
         window.open(`https://wa.me/${site.phone}?text=${encodeURIComponent(msg)}`, "_blank");
@@ -333,10 +333,10 @@ export default function CheckoutPage() {
               </div>
           <div className="rounded-2xl bg-muted/60 px-6 py-6 flex flex-col items-center text-center gap-2">
                 <Truck className="h-8 w-8 text-foreground/80" strokeWidth={1.5} />
-                <p className="text-base font-medium text-foreground">
+                <p className="text-xs font-medium text-foreground">
                   Expected Delivery by {formatDeliveryDate(activeDelivery.end)}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   Delivery Time : {shippingMethod === "online"
                     ? `${ONLINE_DELIVERY_MIN_DAYS} - ${ONLINE_DELIVERY_MAX_DAYS}`
                     : `${COD_DELIVERY_MIN_DAYS} - ${COD_DELIVERY_MAX_DAYS}`} Working Days
