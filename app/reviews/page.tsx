@@ -1,19 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
-
-// Add your filenames from public/reviews here
-const REVIEW_IMAGES = [
-  "1.jpg",
-  "2.jpg",
-  "3.jpg",
-  "4.jpg",
-  "5.jpg",
-  "6.jpg",
-  "7.jpg",
-  "8.jpg",
-];
+import { useEffect, useState } from "react";
 
 function splitIntoColumns(items: string[], count: number) {
   const cols: string[][] = Array.from({ length: count }, () => []);
@@ -21,7 +9,7 @@ function splitIntoColumns(items: string[], count: number) {
   return cols;
 }
 
-const DURATIONS = [28, 35, 22, 40]; // seconds, one per column
+const DURATIONS = [28, 35, 22, 40];
 
 function MarqueeColumn({
   images,
@@ -37,9 +25,9 @@ function MarqueeColumn({
   const loopImages = [...images, ...images];
 
   return (
-    <div className="relative h-full  rounded-xl overflow-hidden">
+    <div className="relative h-full rounded-xl overflow-hidden">
       <div
-        className="flex flex-col gap-4  animate-marquee"
+        className="flex flex-col gap-4 animate-marquee"
         style={{
           animationDuration: `${duration}s`,
           animationDirection: reverse ? "reverse" : "normal",
@@ -67,18 +55,25 @@ function MarqueeColumn({
 }
 
 export default function ReviewsPage() {
+  const [images, setImages] = useState<string[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
-  const mobileCols = splitIntoColumns(REVIEW_IMAGES, 2);
-  const desktopCols = splitIntoColumns(REVIEW_IMAGES, 4);
+
+  useEffect(() => {
+    fetch("/api/reviews")
+      .then((res) => res.json())
+      .then((data) => setImages(data.images));
+  }, []);
+
+  const mobileCols = splitIntoColumns(images, 2);
+  const desktopCols = splitIntoColumns(images, 4);
 
   return (
     <section className="w-screen h-screen flex flex-col px-4">
-      <h2 className="text-center text-3xl font-semibold  mb-6 shrink-0">
+      <h2 className="text-center text-3xl font-semibold mb-6 shrink-0">
         Happy Customers
       </h2>
 
-      {/* Mobile: 2 columns */}
-      <div className="grid grid-cols-2 gap-4  flex-1 min-h-0 md:hidden">
+      <div className="grid grid-cols-2 gap-4 flex-1 min-h-0 md:hidden">
         {mobileCols.map((col, i) => (
           <MarqueeColumn
             key={i}
@@ -90,7 +85,6 @@ export default function ReviewsPage() {
         ))}
       </div>
 
-      {/* Desktop: 4 columns */}
       <div className="hidden md:grid grid-cols-4 gap-4 flex-1 min-h-0">
         {desktopCols.map((col, i) => (
           <MarqueeColumn
@@ -103,7 +97,6 @@ export default function ReviewsPage() {
         ))}
       </div>
 
-      {/* Fullscreen review viewer */}
       {selected && (
         <div
           className="fixed inset-0 z-[100] bg-black/75 backdrop-blur-sm flex items-center justify-center p-4"
