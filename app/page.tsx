@@ -2,6 +2,7 @@
 
 import BrandStory from "@/components/sections/brand-story-about";
 import { Hero } from "@/components/sections/hero";
+import { ReviewsBento } from "@/components/sections/review-bento";
 import { ProductCardWithSale } from "@/components/sections/sale-is-live";
 
 export default function Home() {
@@ -12,6 +13,9 @@ export default function Home() {
           <Hero />
         </div>
       </div>
+    <div className="px-4 my-8">
+  <ReviewsBento />
+</div>
 
       {/*  <div className="px-4 my-8">
         <ProductCardWithSale />
