@@ -1,6 +1,5 @@
 "use client";
 
-import Poster2 from "@/public/p3.jpg";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Image from "next/image";
@@ -22,7 +21,7 @@ export function Hero() {
         {/* Image Container with Skeleton */}
         <div className="relative bg-gray-100 rounded-3xl overflow-hidden">
           <Image
-            src={Poster2}
+            src={'/p3.jpg'}
             alt="BOGO at ₹999"
             width={800}  // ✅ Added explicit dimensions
             height={400} // ✅ Reduced height for optimization
@@ -33,7 +32,6 @@ export function Hero() {
             quality={60} // ✅ Reduced from 75 to 60
             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 80vw, 600px"
             onLoad={() => setImageLoaded(true)}
-            placeholder="blur" // ✅ Added blur placeholder
           />
           
           {/* Skeleton Loader */}
