@@ -1,6 +1,6 @@
 "use client";
 
-import Poster2 from "@/public/p3.jpg";
+import Poster2 from "@/public/p3.jpeg";
 import Link from "next/link";
 import { Button } from "../ui/button";
 import Image from "next/image";
