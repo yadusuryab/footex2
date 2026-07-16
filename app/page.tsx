@@ -1,6 +1,7 @@
 "use client";
 
 import BrandStory from "@/components/sections/brand-story-about";
+import { FreeSocksPromo } from "@/components/sections/free-socks";
 import { Hero } from "@/components/sections/hero";
 import { ReviewsBento } from "@/components/sections/review-bento";
 import { ProductCardWithSale } from "@/components/sections/sale-is-live";
@@ -13,6 +14,9 @@ export default function Home() {
           <Hero />
         </div>
       </div>
+      <div className="px-4 my-8">
+  <FreeSocksPromo />
+</div>
     <div className="px-4 my-8">
   <ReviewsBento />
 </div>

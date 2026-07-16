@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, ShoppingBag, CheckCircle2, Zap, Truck, ArrowRight, Gift, Star, Shield } from "lucide-react";
+import { Loader2, ShoppingBag, CheckCircle2, Zap, Truck, ArrowRight, Gift, Star, Shield, Flame } from "lucide-react";
 import Image from "next/image";
 import { CustomerDetailsForm } from "@/components/checkout/checkout-form";
 import { Button } from "@/components/ui/button";
@@ -225,6 +225,14 @@ export default function CheckoutPage() {
                     </div>
                   )}
                 </div>
+
+                {/* Free flame socks callout */}
+                <div className="mt-4 flex items-center gap-2 rounded-xl bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 px-3 py-2 shadow-sm">
+                  <Flame className="h-4 w-4 text-white shrink-0" />
+                  <p className="text-xs font-bold text-white">
+                      Offer: Free Flame Socks with this order 🎉
+                  </p>
+                </div>
               </div>
 
               {/* Savings Banner */}
@@ -326,6 +334,10 @@ export default function CheckoutPage() {
               {pair1Extra > 0 && <div className="flex justify-between text-sm text-muted-foreground ml-4"><span>Extra – Pair 1</span><span>+₹{pair1Extra}</span></div>}
               {pair2Extra > 0 && <div className="flex justify-between text-sm text-muted-foreground ml-4"><span>Extra – Pair 2</span><span>+₹{pair2Extra}</span></div>}
               <div className="flex justify-between text-sm">
+                <span className="flex items-center gap-1"><Flame className="h-3.5 w-3.5 text-orange-500" /> Flame Socks</span>
+                <span className="text-green-600 font-semibold">FREE</span>
+              </div>
+              <div className="flex justify-between text-sm">
                 <span>Shipping</span>
                 {shippingMethod === "online"
                   ? <span className="text-green-600 font-semibold">🎁 FREE SHIPPING</span>
@@ -355,6 +367,12 @@ export default function CheckoutPage() {
             </div>
           </CardContent>
         </Card>
+      </div>
+
+      {/* Floating free socks badge - festive */}
+      <div className="fixed bottom-24 right-4 z-40 flex items-center gap-1.5 rounded-full bg-gradient-to-r from-red-600 via-orange-500 to-yellow-400 text-white text-xs font-bold px-3 py-2 shadow-lg ring-2 ring-yellow-300 animate-bounce">
+        <Flame className="h-3.5 w-3.5" />
+        Free Socks 🎉
       </div>
 
       {/* Fixed Bottom CTA */}
