@@ -23,7 +23,7 @@ export function Hero() {
         <div className="relative bg-gray-100 rounded-3xl overflow-hidden">
           <Image
             src={Poster2}
-            alt="BOGO at ₹999!"
+            alt="BOGO at ₹999"
             width={800}  // ✅ Added explicit dimensions
             height={400} // ✅ Reduced height for optimization
             className={`w-full h-auto transition-opacity duration-300 ${
