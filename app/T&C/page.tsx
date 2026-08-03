@@ -72,17 +72,9 @@ const TermsAndConditions = () => {
     These are normal aspects of digital product representation.
   </p>
 
-  <h3>Buy 1 Get 1 Offer – Quality & Pricing</h3>
-
-  <p>
-    Our Buy 1 Get 1 offer is structured to provide maximum value at this price range.
-    Product quality is aligned with the offer pricing.
-  </p>
-
-  <p>
-    Expectations of original brand products or high-end premium replicas are not applicable,
-    as those belong to a significantly higher price segment.
-  </p>
+ <p>
+  Buy 1 Get 1 Offer – Quality & Pricing
+Our Buy 1 Get 1 offer is structured to provide maximum value within this price range. The products offered under this promotion are 6A quality replicas, and their quality is aligned with the offer pricing. please note that this is a commercial market grading term used for replica products. It does not mean the product is original, officially branded, or authorized by the brand owner.</p>
 
   <h3>Returns & Replacements</h3>
 
