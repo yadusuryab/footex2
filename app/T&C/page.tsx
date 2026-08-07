@@ -73,9 +73,7 @@ const TermsAndConditions = () => {
   </p>
 
  <p>
-  Buy 1 Get 1 Offer – Quality & Pricing
-Our Buy 1 Get 1 offer is structured to provide maximum value within this price range. The products offered under this promotion are 6A quality replicas, and their quality is aligned with the offer pricing. please note that this is a commercial market grading term used for replica products. It does not mean the product is original, officially branded, or authorized by the brand owner.</p>
-
+ ~Buy 1 Get 1 Offer or Two Pair 1499₹ Offer – Quality & Pricing Our Buy 1 Get 1 offer is structured to provide maximum value within this price range. The products offered under this promotion are 6A quality replicas, and their quality is aligned with the offer pricing. please note that this is a commercial market grading term used for replica products. It does not mean the product is original, officially branded, or authorized by the brand owner.</p>
   <h3>Returns & Replacements</h3>
 
   <p>
