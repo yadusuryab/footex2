@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Loader2, ShoppingBag, CheckCircle2, Zap, Truck, ArrowRight, Gift, Star, Shield, Flame } from "lucide-react";
+import { Loader2, ShoppingBag, CheckCircle2, Zap, Truck, ArrowRight, Gift, Star, Shield, Flame, SprayCan } from "lucide-react";
 import Image from "next/image";
 import { CustomerDetailsForm } from "@/components/checkout/checkout-form";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,7 @@ const getProductImageUrl = (product: any): string => {
 
 const BASE_PRICE = 1499;
 const COD_CHARGE = 300;
+const SHOE_CLEANER_PRICE = 80;
 
 // Delivery windows (business days added on top of order date)
 const ONLINE_DELIVERY_MIN_DAYS = 5;
@@ -66,6 +67,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [shippingMethod, setShippingMethod] = useState<"online" | "cod">("online");
+  const [addShoeCleaner, setAddShoeCleaner] = useState(false);
   const [currentStep, setCurrentStep] = useState<CheckoutStep>("payment");
   const [customerDetails, setCustomerDetails] = useState({
     name: "", contact1: "", contact2: "", address: "",
@@ -90,7 +92,8 @@ export default function CheckoutPage() {
   const pair2Extra = Math.max(0, (freeProduct?.price || BASE_PRICE) - BASE_PRICE);
   const subtotal = BASE_PRICE + pair1Extra + pair2Extra;
   const shippingCharge = shippingMethod === "online" ? 0 : COD_CHARGE;
-  const totalAmount = subtotal + shippingCharge;
+  const cleanerCharge = addShoeCleaner ? SHOE_CLEANER_PRICE : 0;
+  const totalAmount = subtotal + shippingCharge + cleanerCharge;
 
   const onlineDelivery = getExpectedDelivery(ONLINE_DELIVERY_MIN_DAYS, ONLINE_DELIVERY_MAX_DAYS, orderDate);
   const codDelivery = getExpectedDelivery(COD_DELIVERY_MIN_DAYS, COD_DELIVERY_MAX_DAYS, orderDate);
@@ -116,7 +119,7 @@ export default function CheckoutPage() {
         return msg;
       }).join("\n\n");
 
-      const msg = `*2 PAIR SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nBase Price: ₹${BASE_PRICE}\nShipping: ${shippingMethod === "online" ? "FREE (Online Payment)" : `₹${COD_CHARGE} (Cash on Delivery)`}\nExpected Delivery: ${activeDelivery.label}\n*GRAND TOTAL: ₹${totalAmount}*`.trim();
+      const msg = `*2 PAIR SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nBase Price: ₹${BASE_PRICE}\n${addShoeCleaner ? `Add-on: Shoe Cleaner Kit (+₹${SHOE_CLEANER_PRICE})\n` : ""}Shipping: ${shippingMethod === "online" ? "FREE (Online Payment)" : `₹${COD_CHARGE} (Cash on Delivery)`}\nExpected Delivery: ${activeDelivery.label}\n*GRAND TOTAL: ₹${totalAmount}*`.trim();
 
       setTimeout(() => {
         window.open(`https://wa.me/${site.phone}?text=${encodeURIComponent(msg)}`, "_blank");
@@ -235,14 +238,6 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Savings Banner */}
-              {/* <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-xl flex items-center gap-2">
-                <Star className="h-4 w-4 text-green-600 flex-shrink-0" />
-                <p className="text-sm text-green-700 font-medium">
-                  You're saving ₹{BASE_PRICE + pair2Extra} on this Buy 1 Get 1 deal! 🎉
-                </p>
-              </div> */}
-
               {/* Payment Options */}
              <RadioGroup
   value={shippingMethod}
@@ -305,8 +300,56 @@ export default function CheckoutPage() {
   </div>
 </RadioGroup>
 
-              {/* Trust badges */}
-             
+              {/* Shoe Cleaner Add-on - Offer style */}
+              <div
+                onClick={() => setAddShoeCleaner(!addShoeCleaner)}
+                className={`relative mt-4 cursor-pointer rounded-xl p-[2px] transition-all ${
+                  addShoeCleaner
+                    ? "bg-gradient-to-r from-purple-600 via-blue-600 to-cyan-500"
+                    : "bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-400 animate-pulse"
+                }`}
+              >
+                {/* Corner ribbon */}
+                <div className="absolute -top-2.5 left-4 z-10 flex items-center gap-1 rounded-full bg-yellow-400 px-2.5 py-0.5 shadow-md">
+                  <Star className="h-3 w-3 text-yellow-900 fill-yellow-900" />
+                  <span className="text-[10px] font-extrabold text-yellow-900 tracking-wide">LIMITED OFFER</span>
+                </div>
+
+                <div className={`flex items-start gap-3 rounded-[10px] p-4 pt-5 ${addShoeCleaner ? "bg-blue-50" : "bg-white"}`}>
+                  <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${addShoeCleaner ? "bg-blue-600" : "bg-gradient-to-br from-purple-600 to-cyan-500"}`}>
+                    <SprayCan className="h-5 w-5 text-white" />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 flex-wrap">
+                      <Label className="font-bold cursor-pointer text-sm">
+                        Add Premium Shoe Cleaner Kit
+                      </Label>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs text-muted-foreground line-through">₹199</span>
+                        <Badge className="bg-gradient-to-r from-purple-600 to-cyan-500 text-white text-xs px-2 py-0.5 rounded-full font-bold">
+                          ₹{SHOE_CLEANER_PRICE} only
+                        </Badge>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Keep both pairs looking fresh · Most customers add this 🔥
+                    </p>
+                    <div className="flex items-center gap-2 mt-2">
+                      <input
+                        type="checkbox"
+                        checked={addShoeCleaner}
+                        onChange={() => setAddShoeCleaner(!addShoeCleaner)}
+                        className="h-4 w-4 accent-blue-600"
+                      />
+                      <span className={`text-xs font-semibold ${addShoeCleaner ? "text-blue-600" : "text-muted-foreground"}`}>
+                        {addShoeCleaner ? "✓ Added to your order" : "Tap to add"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <Button onClick={() => setCurrentStep("details")} className="w-full h-12 text-lg font-semibold mt-6 flex items-center gap-2" size="lg">
                 Continue to Details <ArrowRight className="h-4 w-4" />
               </Button>
@@ -337,6 +380,12 @@ export default function CheckoutPage() {
                 <span className="flex items-center gap-1"><Flame className="h-3.5 w-3.5 text-orange-500" /> Flame Socks</span>
                 <span className="text-green-600 font-semibold">FREE</span>
               </div>
+              {addShoeCleaner && (
+                <div className="flex justify-between text-sm">
+                  <span className="flex items-center gap-1"><SprayCan className="h-3.5 w-3.5 text-blue-500" /> Shoe Cleaner Kit</span>
+                  <span>+₹{SHOE_CLEANER_PRICE}</span>
+                </div>
+              )}
               <div className="flex justify-between text-sm">
                 <span>Shipping</span>
                 {shippingMethod === "online"

@@ -33,7 +33,6 @@ export function Hero() {
             quality={60} // ✅ Reduced from 75 to 60
             sizes="(max-width: 640px) 95vw, (max-width: 1024px) 80vw, 600px"
             onLoad={() => setImageLoaded(true)}
-            placeholder="blur" // ✅ Added blur placeholder
           />
           
           {/* Skeleton Loader */}
