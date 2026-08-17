@@ -119,7 +119,7 @@ export default function CheckoutPage() {
         return msg;
       }).join("\n\n");
 
-      const msg = `*2 PAIR SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nBase Price: ₹${BASE_PRICE}\n${addShoeCleaner ? `Add-on: Shoe Cleaner Kit (+₹${SHOE_CLEANER_PRICE})\n` : ""}Shipping: ${shippingMethod === "online" ? "FREE (Online Payment)" : `₹${COD_CHARGE} (Cash on Delivery)`}\nExpected Delivery: ${activeDelivery.label}\n*GRAND TOTAL: ₹${totalAmount}*`.trim();
+      const msg = `*2 PAIR SHOES ORDER*\n\n${productMessages}\n\n*CUSTOMER DETAILS*\nName: ${customerDetails.name}\nInstagram: ${customerDetails.instagramId}\nAddress: ${customerDetails.address}\nDistrict: ${customerDetails.district}\nState: ${customerDetails.state}\nPincode: ${customerDetails.pincode}\nLandmark: ${customerDetails.landmark || "N/A"}\nContact No.1: ${customerDetails.contact1}\nContact No.2: ${customerDetails.contact2 || "N/A"}\n\n*ORDER SUMMARY*\nBase Price: ₹${BASE_PRICE}\n${addShoeCleaner ? `Add-on: Shoe Cleaner (+₹${SHOE_CLEANER_PRICE})\n` : ""}Shipping: ${shippingMethod === "online" ? "FREE (Online Payment)" : `₹${COD_CHARGE} (Cash on Delivery)`}\nExpected Delivery: ${activeDelivery.label}\n*GRAND TOTAL: ₹${totalAmount}*`.trim();
 
       setTimeout(() => {
         window.open(`https://wa.me/${site.phone}?text=${encodeURIComponent(msg)}`, "_blank");
@@ -323,7 +323,7 @@ export default function CheckoutPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2 flex-wrap">
                       <Label className="font-bold cursor-pointer text-sm">
-                        Add Premium Shoe Cleaner Kit
+                        Add Premium Shoe Cleaner
                       </Label>
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs text-muted-foreground line-through">₹199</span>
@@ -382,7 +382,7 @@ export default function CheckoutPage() {
               </div>
               {addShoeCleaner && (
                 <div className="flex justify-between text-sm">
-                  <span className="flex items-center gap-1"><SprayCan className="h-3.5 w-3.5 text-blue-500" /> Shoe Cleaner Kit</span>
+                  <span className="flex items-center gap-1"><SprayCan className="h-3.5 w-3.5 text-blue-500" /> Shoe Cleaner </span>
                   <span>+₹{SHOE_CLEANER_PRICE}</span>
                 </div>
               )}
