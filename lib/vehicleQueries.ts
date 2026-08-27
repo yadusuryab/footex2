@@ -49,7 +49,12 @@ export const getAllShoes = async (price?: string | null, limit: number = 24, off
     return undefined;
   }
 };
+// lib/queries.ts
 
+export async function getReviewImages(): Promise<string[]> {
+  const query = `*[_type == "review" && isApproved == true && count(reviewImages) > 0].reviewImages[].asset->url`;
+  return client.fetch(query);
+}
 // For getShoeById (detail pages) - HIGHER QUALITY
 export const getShoeById = async (id: string): Promise<any | undefined> => {
   const cacheKey = `shoe-${id}`;

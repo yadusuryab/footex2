@@ -1,12 +1,8 @@
-import fs from "fs";
-import path from "path";
+// app/api/reviews/route.ts
+import { getReviewImages } from "@/lib/vehicleQueries";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  const dir = path.join(process.cwd(), "public/reviews");
-  const images = fs
-    .readdirSync(dir)
-    .filter((f) => /\.(jpe?g|png|webp)$/i.test(f));
-
+  const images = await  getReviewImages();
   return NextResponse.json({ images });
 }
