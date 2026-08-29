@@ -39,6 +39,22 @@ const shoe = {
     },
     { name: "colorVariants", title: "Color Variants", type: "array", of: [{ type: "string" }] },
     {
+  name: "productLabel",
+  title: "Product Label",
+  type: "array",
+  of: [{ type: "string" }],
+  options: {
+    list: [
+      { title: "Trending", value: "trending" },
+      { title: "New Arrival", value: "new-arrival" },
+      { title: "Best Seller", value: "best-seller" },
+      { title: "Limited Edition", value: "limited-edition" },
+      { title: "Sale", value: "sale" },
+    ],
+    layout: "list",
+  },
+},
+    {
       name: "tags",
       title: "Tags",
       type: "array",
@@ -88,6 +104,7 @@ const shoe = {
       },
     },
   ],
+  
   orderings: [
     { title: 'Order Number, Asc', name: 'orderNumberAsc', by: [{ field: 'orderNumber', direction: 'asc' }] },
     {
@@ -99,6 +116,7 @@ const shoe = {
       ],
     },
   ],
+  
 }
 
 const review = {
