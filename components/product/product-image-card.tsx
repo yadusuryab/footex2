@@ -10,6 +10,7 @@ export interface Product {
   offerPrice?: number;
   buyOneGetOne?: boolean;
   imageUrl?: string;
+  productLabel?: string[];
 }
 
 interface ProductCardProps {
@@ -20,13 +21,29 @@ interface ProductCardProps {
   onClick?: () => void;
 }
 
+const LABEL_STYLES: Record<string, string> = {
+  trending: "bg-orange-500 text-white",
+  "new-arrival": "bg-blue-500 text-white",
+  "best-seller": "bg-purple-500 text-white",
+  "limited-edition": "bg-black text-white",
+  sale: "bg-red-500 text-white",
+};
+
+const LABEL_TITLES: Record<string, string> = {
+  trending: "Trending",
+  "new-arrival": "New Arrival",
+  "best-seller": "Best Seller",
+  "limited-edition": "Limited Edition",
+  sale: "Sale",
+};
+
 export default function ProductCard2({
   product,
   className = "",
   noLink = true,
   onClick,
 }: ProductCardProps) {
-  const { productName, price, offerPrice, imageUrl } = product;
+  const { productName, price, offerPrice, imageUrl, productLabel } = product;
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
 
@@ -37,6 +54,22 @@ export default function ProductCard2({
     >
       {/* ✅ OPTIMIZED Image with Next.js Image component */}
       <div className="aspect-square relative bg-gray-100 rounded-2xl overflow-hidden">
+        {/* ✅ Product label badge(s) */}
+        {productLabel && productLabel.length > 0 && (
+          <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+            {productLabel.slice(0, 2).map((label: string) => (
+              <span
+                key={label}
+                className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+                  LABEL_STYLES[label] || "bg-gray-800 text-white"
+                }`}
+              >
+                {LABEL_TITLES[label] || label}
+              </span>
+            ))}
+          </div>
+        )}
+
         {!imageError ? (
           <>
             <Image

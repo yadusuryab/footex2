@@ -32,6 +32,7 @@ export const getAllShoes = async (price?: string | null, limit: number = 24, off
     isDisabled,
     disableReason,
     stock,
+    productLabel,
     "imageUrl": images[0].asset->url + "?w=400&h=400&auto=format&q=85&fit=crop"
   }`;
 
