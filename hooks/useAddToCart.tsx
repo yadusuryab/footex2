@@ -220,7 +220,7 @@ export const useAddToCart = () => {
 
         {/* ✅ OPTIMIZED: Product Grid with virtual scrolling consideration */}
         <div 
-          className="grid md:grid-cols-3 grid-cols-2 gap-3 mb-20 max-h-[60vh] overflow-y-auto" // ✅ Reduced gap
+          className="grid md:grid-cols-4 md:px-64 grid-cols-2 gap-3 mb-20 max-h-[60vh] overflow-y-auto" // ✅ Reduced gap
           onScroll={handleBogoScroll}
         >
           {filteredProducts.length === 0 ? (
