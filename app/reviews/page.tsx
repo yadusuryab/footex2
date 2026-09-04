@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { client } from "@/sanityClient";
 
 interface ReviewImage {
@@ -27,6 +27,22 @@ function splitIntoColumns(items: string[], count: number) {
 }
 
 const DURATIONS = [28, 35, 22, 40];
+const WATERMARK_TEXT = "footex_";
+
+function Watermark() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 z-10 flex flex-wrap content-around justify-around opacity-30 select-none"
+      style={{ transform: "rotate(-25deg) scale(1.4)" }}
+    >
+      {Array.from({ length: 50 }).map((_, i) => (
+        <span key={i} className="text-white text-sm font-bold drop-shadow-md">
+          {WATERMARK_TEXT}
+        </span>
+      ))}
+    </div>
+  );
+}
 
 function MarqueeColumn({
   images,
@@ -54,15 +70,18 @@ function MarqueeColumn({
           <button
             key={`${src}-${i}`}
             onClick={() => onSelect(src)}
-            className="relative w-full aspect-[9/16] shadow-lg rounded-xl overflow-hidden shadow-md cursor-pointer group"
+            onContextMenu={(e) => e.preventDefault()}
+            className="relative w-full aspect-[9/16] shadow-lg rounded-xl overflow-hidden shadow-md cursor-pointer group select-none"
           >
             <Image
               src={src}
               alt="Customer review"
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              draggable={false}
+              className="object-cover transition-transform duration-300 group-hover:scale-105 pointer-events-none"
               sizes="(max-width: 768px) 50vw, 25vw"
             />
+            <Watermark />
             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
           </button>
         ))}
@@ -76,17 +95,56 @@ export default function ReviewsPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [privacyBlur, setPrivacyBlur] = useState(false);
 
   useEffect(() => {
     fetchApprovedReviewImages();
+  }, []);
+
+  // Screenshot / capture deterrents.
+  // Note: no web API can fully block OS-level screenshots. These are
+  // best-effort deterrents only.
+  useEffect(() => {
+    const blockContextMenu = (e: MouseEvent) => e.preventDefault();
+    const blockKeys = (e: KeyboardEvent) => {
+      const key = e.key?.toLowerCase();
+      const isPrintScreen = key === "printscreen";
+      const isSaveOrPrint =
+        (e.ctrlKey || e.metaKey) && ["s", "p", "u"].includes(key);
+      const isDevTools =
+        key === "f12" ||
+        ((e.ctrlKey || e.metaKey) && e.shiftKey && ["i", "j", "c"].includes(key));
+      if (isPrintScreen || isSaveOrPrint || isDevTools) {
+        e.preventDefault();
+      }
+    };
+    const blurOnHidden = () => {
+      if (document.visibilityState === "hidden") setPrivacyBlur(true);
+      else setTimeout(() => setPrivacyBlur(false), 400);
+    };
+    const blurOnWindowBlur = () => setPrivacyBlur(true);
+    const clearOnFocus = () => setTimeout(() => setPrivacyBlur(false), 400);
+
+    document.addEventListener("contextmenu", blockContextMenu);
+    document.addEventListener("keydown", blockKeys);
+    document.addEventListener("visibilitychange", blurOnHidden);
+    window.addEventListener("blur", blurOnWindowBlur);
+    window.addEventListener("focus", clearOnFocus);
+
+    return () => {
+      document.removeEventListener("contextmenu", blockContextMenu);
+      document.removeEventListener("keydown", blockKeys);
+      document.removeEventListener("visibilitychange", blurOnHidden);
+      window.removeEventListener("blur", blurOnWindowBlur);
+      window.removeEventListener("focus", clearOnFocus);
+    };
   }, []);
 
   const fetchApprovedReviewImages = async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Fetch only approved reviews with images
+
       const data = await client.fetch<Review[]>(
         `*[_type == "review" && isApproved == true && count(reviewImages) > 0] | order(createdAt desc) {
           _id,
@@ -100,19 +158,15 @@ export default function ReviewsPage() {
         }`
       );
 
-      console.log("Fetched approved reviews with images:", data);
-
-      // Extract all image URLs from all reviews
       const allImages: string[] = [];
       data.forEach((review) => {
-        review.reviewImages?.forEach((img:any) => {
+        review.reviewImages?.forEach((img: any) => {
           if (img.asset?.url) {
             allImages.push(img.asset.url);
           }
         });
       });
 
-      console.log("Extracted image URLs:", allImages);
       setImages(allImages);
     } catch (err) {
       console.error("Error fetching review images:", err);
@@ -123,30 +177,10 @@ export default function ReviewsPage() {
     }
   };
 
-  // Alternative: If you want to use image references and construct URLs manually
-  const getImageUrl = (image: ReviewImage): string | null => {
-    try {
-      const ref = image?.asset?._ref;
-      if (!ref) return null;
-      
-      // If the ref is already a URL (from Sanity's asset URL)
-      if (ref.startsWith('http')) return ref;
-      
-      // Parse the Sanity asset reference
-      const parts = ref.split("-");
-      if (parts.length >= 3) {
-        const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "your-project-id";
-        const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || "production";
-        return `https://cdn.sanity.io/images/${projectId}/${dataset}/${parts[1]}-${parts[2]}.${parts[3] || "jpg"}`;
-      }
-      return null;
-    } catch {
-      return null;
-    }
-  };
-
   const mobileCols = useMemo(() => splitIntoColumns(images, 2), [images]);
   const desktopCols = useMemo(() => splitIntoColumns(images, 4), [images]);
+
+  const closeModal = useCallback(() => setSelected(null), []);
 
   if (loading) {
     return (
@@ -195,7 +229,10 @@ export default function ReviewsPage() {
   }
 
   return (
-    <section className="w-screen h-screen flex flex-col px-4">
+    <section
+      className="w-screen h-screen flex flex-col px-4 select-none"
+      style={{ filter: privacyBlur ? "blur(20px)" : "none" }}
+    >
       <h2 className="text-center text-3xl font-semibold mb-6 shrink-0">
         Happy Customers
       </h2>
@@ -227,11 +264,11 @@ export default function ReviewsPage() {
       {selected && (
         <div
           className="fixed inset-0 z-[100] bg-black/75 backdrop-blur-sm flex items-center justify-center p-4"
-          onClick={() => setSelected(null)}
+          onClick={closeModal}
         >
           <button
             type="button"
-            onClick={() => setSelected(null)}
+            onClick={closeModal}
             aria-label="Close"
             className="absolute top-6 right-6 z-[110] w-10 h-10 flex items-center justify-center rounded-full bg-white/10 text-white hover:bg-white/20"
           >
@@ -253,14 +290,17 @@ export default function ReviewsPage() {
           <div
             className="relative w-full max-w-sm aspect-[9/16]"
             onClick={(e) => e.stopPropagation()}
+            onContextMenu={(e) => e.preventDefault()}
           >
             <Image
               src={selected}
               alt="Customer review"
               fill
-              className="object-contain rounded-xl"
+              draggable={false}
+              className="object-contain rounded-xl pointer-events-none"
               sizes="100vw"
             />
+            <Watermark />
           </div>
         </div>
       )}

@@ -14,7 +14,7 @@ const Header = () => {
   return (
     <>
       {/* Main Header */}
-      <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[85%] max-w-[500px]">
+      <header className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-[85%] max-w-[360px]">
         <div className="bg-primary/75 backdrop-blur-xl rounded-3xl p-4 px-6"> {/* ✅ Reduced padding */}
           <div className="flex items-center justify-between">
             {/* ✅ OPTIMIZED: Brand Logo with proper sizing */}

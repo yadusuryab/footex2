@@ -7,7 +7,7 @@ export function ReviewsBento() {
   return (
     <Link
       href="/reviews"
-      className="group relative block w-full overflow-hidden rounded-2xl bg-neutral-950 border border-white/10 hover:border-white/20 transition-colors"
+      className="group relative block w-full max-w-[360px] mx-auto overflow-hidden rounded-2xl bg-neutral-950 border border-white/10 hover:border-white/20 transition-colors"
     >
       <div className="flex items-stretch">
         {/* Text side */}

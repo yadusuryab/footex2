@@ -22,11 +22,10 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="flex py-0 flex-col min-h-screen">
+    <div className="flex py-0 px-4 flex-col min-h-screen">
       <div className="relative overflow-hidden">
-        <div className="px-4">
+       
           <Hero />
-        </div>
       </div>
 
       {freeSocksOffer && (
