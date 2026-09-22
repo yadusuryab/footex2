@@ -255,7 +255,7 @@
     @apply bg-background text-foreground;
   }
 }
-@keyframes marquee {
+@keyframes marquee2 {
   from {
     transform: translateY(0);
   }
@@ -265,7 +265,7 @@
 }
 
 .animate-marquee {
-  animation-name: marquee;
+  animation-name: marquee2;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
 }
