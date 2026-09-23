@@ -264,7 +264,7 @@
   }
 }
 
-.animate-marquee {
+.animate-marquee2 {
   animation-name: marquee2;
   animation-timing-function: linear;
   animation-iteration-count: infinite;
